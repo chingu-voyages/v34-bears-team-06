@@ -1,9 +1,13 @@
+import React from "react";
 
-/* export default function handler(req, res) {
-    res.status(200).json({ name: 'John Doe' })
-  } */
-import Button from '../../components/Button'
+export default function create() {
+  const [value, setValue] = React.useState(0);
+  const increaseValue = () => setValue(value + 1);
 
-export default function create(req, res) {
-  return <Button></Button>
+  return (
+    <>
+      <h1>{value}</h1>
+      <button onClick={increaseValue}>Increase value</button>
+    </>
+  );
 }
