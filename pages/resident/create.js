@@ -25,24 +25,32 @@ export default function create() {
   const [dateOfBirth, setDateOfBirth] = useState(new Date().getDate());
   const [monthOfBirth, setMonthOfBirth] = useState(new Date().getMonth() + 1);
   const [yearOfBirth, setYearOfBirth] = useState(new Date().getYear() + 1900);
-  
 
-//  Need to fix below; dob now a Date object, but not updating with dependencies
-  const [dob, setDob] = React.useState(new Date())
+  //  Need to fix below; dob now a Date object, but not updating with dependencies
+  const [dob, setDob] = React.useState(new Date());
   useEffect(() => {
-      console.log(`${yearOfBirth}-${monthOfBirth}-${dateOfBirth}`)
-    setDob(new Date(`${yearOfBirth}-${monthOfBirth}-${dateOfBirth}`))
-  }, [dateOfBirth, monthOfBirth, yearOfBirth])
-//   Need to fix above
-
+    setDob(new Date(`${yearOfBirth}-${monthOfBirth}-${dateOfBirth}`));
+  }, [dateOfBirth, monthOfBirth, yearOfBirth]);
+  //   Need to fix above
 
   const [height, setHeight] = useState(0);
   const [weight, setWeight] = useState(0);
 
-  const handleSubmit = event => {
+  const handleSubmit = (event) => {
     event.preventDefault();
-    alert(`Name: ${firstName} ${lastName} is ${height} cm tall is weighs ${weight} pounds`)
-  }
+    let dataObject = {
+        firstName,
+        lastName,
+        dob,
+        height,
+        weight,
+      };
+
+    //   Handled by FormControl Chakra UI; these conditions will never be true because you can't submit required fields
+    if (firstName !== "" && lastName !== "" && height !== 0 && weight !== 0) {
+      console.log("cannot submit until these are filled")
+    }
+  };
 
   console.log(
     weight,
@@ -249,7 +257,7 @@ export default function create() {
           </Slider>
         </FormControl>
         <Button colorScheme="teal" size="lg" type="submit">
-          Button
+          Submit
         </Button>
       </form>
     </>
