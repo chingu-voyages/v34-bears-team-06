@@ -30,8 +30,8 @@ export default function create() {
 //  Need to fix below; dob now a Date object, but not updating with dependencies
   const [dob, setDob] = React.useState(new Date())
   useEffect(() => {
-    setDob(`${yearOfBirth}-${monthOfBirth}-${dateOfBirth}`)
-    setDob(new Date(dob))
+      console.log(`${yearOfBirth}-${monthOfBirth}-${dateOfBirth}`)
+    setDob(new Date(`${yearOfBirth}-${monthOfBirth}-${dateOfBirth}`))
   }, [dateOfBirth, monthOfBirth, yearOfBirth])
 //   Need to fix above
 
