@@ -39,11 +39,11 @@ export default function create() {
   const handleSubmit = (event) => {
     event.preventDefault();
     let dataObject = {
-        firstName,
-        lastName,
-        dob,
+        first_name: firstName,
+        last_name: lastName,
+        date_of_birth: dob,
         height,
-        weight,
+        weight
       };
 
     //   Handled by FormControl Chakra UI; these conditions will never be true because you can't submit required fields
