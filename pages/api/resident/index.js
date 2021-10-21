@@ -1,29 +1,19 @@
-import connectDB from '../../../middleware/mongodb';
-import Resident from '../../../models/resident';
+import nc from "next-connect";
+import database from "utils/api/database"
 
-async function handler(req, res) {
-  const { method } = req;
+const handler = nc();
 
-  try {
-    switch (method) {
-      // Maybe return all the residents here.
-      case "GET":
-        res.json({ msg: "Residents API" });
-        break;
-      // Create a resident
-      case "POST":
-        const { body } = req;
-        const newResident = await Resident.create(body);
-        res.json({ msg: "Resident created", resident: newResident });
-        break;
+handler.get(async (req, res) => {
+  const { ResidentModel } = await database()
+  const resident = await ResidentModel.find();
+  res.json({ msg: "Residents list", resident })
+});
 
-      // Method unavailable
-      default:
-        res.status(405).json({ error: "Method not allowed." });
-    }
-  } catch (error) {
-    res.status(500).json({ error: error.name, msg: error.message, code: error.code });
-  }
-}
+handler.post(async(req, res) => {
+  const { ResidentModel } = await database()
+  const residentData = req.body;
+  const newResident = await ResidentModel.insertOne(residentData);
+  res.json({ msg: "Resident created", resident: newResident });
+});
 
-export default connectDB(handler);
+export default handler;
