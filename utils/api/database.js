@@ -19,8 +19,10 @@ export default async function database() {
   await mongoose.connect(
     process.env.MONGODB_URI || "mongodb://localhost/eating-tracker",
     {
-      useUnifiedTopology: true,
       useNewUrlParser: true,
+      useUnifiedTopology: true,
+      // useCreateIndex: true,
+      // useFindAndModify: false,
     }
   );
   console.log("Database connected");

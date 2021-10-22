@@ -36,7 +36,7 @@ export default function create() {
   const [height, setHeight] = useState(0);
   const [weight, setWeight] = useState(0);
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     let dataObject = {
         first_name: firstName,
@@ -46,22 +46,32 @@ export default function create() {
         weight
       };
 
-    //   Handled by FormControl Chakra UI; these conditions will never be true because you can't submit required fields
     if (firstName !== "" && lastName !== "" && height !== 0 && weight !== 0) {
       console.log("cannot submit until these are filled")
     }
-  };
+    const rawResponse = await fetch("/api/resident", {
+      method: "POST",
+      body: JSON.stringify(dataObject),
+      headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+      }
+    })
+    const response = await rawResponse.json()
+      console.log('[Create resident] Response:', response)
+      
+    };
 
-  console.log(
-    weight,
-    height,
-    yearOfBirth,
-    dateOfBirth,
-    monthOfBirth,
-    lastName,
-    firstName,
-    dob.toISOString()
-  );
+//   console.log(
+//     weight,
+//     height,
+//     yearOfBirth,
+//     dateOfBirth,
+//     monthOfBirth,
+//     lastName,
+//     firstName,
+//     dob.toISOString()
+//   );
 
   return (
     <>
