@@ -1,5 +1,5 @@
-import mongoose from 'mongoose';
-var Schema = mongoose.Schema;
+import mongoose, { ObjectId, Schema } from 'mongoose';
+import Day from './day'
 
 var resident = new Schema({
   first_name: {
@@ -21,7 +21,20 @@ var resident = new Schema({
   height: {
     type: Number,
     required: true
-  }
+  },
+  eating_history: [{
+    day: {
+      type: Date,
+      required: true
+    },
+    mealId: { 
+      type: Schema.Types.ObjectId,  //Schema.Types.ObjectId // Schema.ObjectId
+      ref: "Meal"
+    },
+    amount_eaten: {
+      type: Number
+    },
+  }]
 });
 
 mongoose.models = {};
