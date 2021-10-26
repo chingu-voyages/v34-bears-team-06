@@ -11,11 +11,10 @@ var day = new Schema({
         description: "Week day zero indexed."
     },
     meals: {
-        type: SchemaSchema.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: "Meal"
     }
 })
-
 
 var Day = model('Day', day);
 export default Day;

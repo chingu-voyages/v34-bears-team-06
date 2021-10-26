@@ -3,7 +3,7 @@ import { Box, Image, Flex, Spacer, Badge } from "@chakra-ui/react";
 
 export default function TopDashboard() {
   async function getResident() {
-    const response = await fetch("/api/resident");
+    const response = await fetch("/api/resident?first_name=Donald");
     console.log(response);
     const data = await response.json();
     const firstResident = data.resident[0];

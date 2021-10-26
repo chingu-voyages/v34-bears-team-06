@@ -4,7 +4,7 @@ import { Box, Image, Flex, Spacer, Badge, Heading } from "@chakra-ui/react";
 export default function TimeKeeper() {
   const [time, setTime] = useState(Date.now());
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     setInterval(function () {
       const today = new Date();
       let h = today.getHours();
@@ -21,13 +21,13 @@ export default function TimeKeeper() {
       //   Adds a '0' if the second count is < 10
       let s = today.getSeconds();
       let sec = s < 10 ? `0${s}` : s;
-      
+
       setTime(`${h}:${min}:${sec} ${ampm}`);
     }, 1000);
   });
 
   return (
-    <div time={time} setTime={setTime}>
+    <div time={time}>
       <Heading as="h3" size="lg">
         Time: {time}
       </Heading>
