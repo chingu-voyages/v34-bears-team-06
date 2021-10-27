@@ -5,6 +5,7 @@ node_modules/
 /.pnp
 .pnp.js
 .env
+package-lock.json
 
 # testing
 /coverage
@@ -36,3 +37,4 @@ yarn-error.log*
 .vercel
 
 .docs
+.vscode
