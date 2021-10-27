@@ -1,3 +1,7 @@
+/**
+ * Use https://nextjs.org/docs/migrating/from-react-router
+ */
+/*
 import {useLocation} from 'react-router'
 
 function DetailPage() {
@@ -8,3 +12,4 @@ function DetailPage() {
 }
 
 export default DetailPage
+*/
