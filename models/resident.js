@@ -25,7 +25,7 @@ var resident = new Schema({
   eating_history: [{
     day: {
       type: Date,
-      required: true
+      // required: true
     },
     mealId: { 
       type: Schema.Types.ObjectId,  //Schema.Types.ObjectId // Schema.ObjectId

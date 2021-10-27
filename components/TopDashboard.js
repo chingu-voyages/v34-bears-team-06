@@ -2,22 +2,6 @@ import { useState, useEffect } from "react";
 import { Box, Image, Flex, Spacer, Badge } from "@chakra-ui/react";
 
 export default function TopDashboard() {
-  async function getResident() {
-    const response = await fetch("/api/resident?first_name=Donald");
-    console.log(response);
-    const data = await response.json();
-    const firstResident = data.resident[0];
-    console.log(firstResident);
-    setUserDB(firstResident);
-  }
-
-  useEffect(() => {
-    // uri: http://localhost:3000/api/resident?_id=<id>
-    // const request = await rawRequest.json()
-    // resident is in: request.resident[0]
-    getResident();
-  }, []);
-
   const [userDB, setUserDB] = useState({
     id: "1234",
     first_name: "John",
@@ -26,6 +10,24 @@ export default function TopDashboard() {
     weight: 999,
     height: 999,
   });
+
+  async function getResident() {
+    const response = await fetch("/api/resident?first_name=Daniel");
+    console.log(response);
+    const data = await response.json();
+    const firstResident = data.resident[0];
+    console.log(firstResident);
+    if (firstResident !== undefined) {
+      setUserDB(firstResident);
+    }
+  }
+
+  useEffect(() => {
+    // uri: http://localhost:3000/api/resident?_id=<id>
+    // const request = await rawRequest.json()
+    // resident is in: request.resident[0]
+    getResident();
+  }, []);
 
   function returnAge(dob) {
     const timeDiff = (Date.now() - new Date(dob)) / 1000 / 365 / 24 / 60 / 60;
