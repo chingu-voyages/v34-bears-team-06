@@ -13,12 +13,14 @@ export default function CalorieGoals() {
 
 //   reused code from TopDashboard
   async function getResident() {
-    const response = await fetch("../api/resident");
+    const response = await fetch("/api/resident?first_name=Daniel");
     console.log(response);
     const data = await response.json();
     const firstResident = data.resident[0];
     console.log(firstResident);
-    setUserDB(firstResident);
+    if (firstResident !== undefined) {
+      setUserDB(firstResident);
+    }
   }
 
   useEffect(() => {
@@ -33,6 +35,8 @@ export default function CalorieGoals() {
   }
 
   function baseMetabolicEquation(age, weight, height, male) {
+
+    weight = weight / 2.2
     //   If male, +5. If female, - 161. Put in -80 as a middle ground
     let equation = weight * 10 + height * 6.25 - age * 5;
 
@@ -45,6 +49,7 @@ export default function CalorieGoals() {
   }
 
   function estimatedEnergyEquation(age, weight, height, male) {
+    weight = weight / 2.2
     height = height / 100;
     let equation;
 
@@ -61,7 +66,7 @@ export default function CalorieGoals() {
       {/* Intro statement */}
       <b>
         Based on an age of {returnAge(userDB.date_of_birth)} years, a weight of{" "}
-        {userDB.weight} kilograms and a height of {userDB.height} cm, you'll
+        {userDB.weight} pounds and a height of {userDB.height} cm, you'll
         need...
       </b>
       <br />
