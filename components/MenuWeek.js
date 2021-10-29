@@ -23,6 +23,7 @@ export default function MenuWeek() {
       overflow="hidden"
     >
       <b>View This Week's Menu</b>
+      
       <br />
       <b>{`${menuData.menu_title} (${menuData.easy_id})`}</b>
 

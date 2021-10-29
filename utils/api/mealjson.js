@@ -10,12 +10,14 @@
 const mockMenu = {
   easy_id: "FW2122",
   menu_title: "Fall-Winter 2021-2022",
+  init_date: new Date(Date.UTC(2021, 9, 1, 12, 0, 0)),
   days: [
     {
       day_number: 1,
       meals: [
         {
           meal_role: "Breakfast",
+          meal_time: new Date(Date.UTC(2000, 1, 1, 9, 30, 0)),
           meal_title:
             "Blueberries. Cinnamon oatmeal with hard boiled egg and whole wheat toast",
           protein_offered: 24,
@@ -24,6 +26,7 @@ const mockMenu = {
         },
         {
           meal_role: "Lunch",
+          meal_time: new Date(Date.UTC(2000, 1, 1, 12, 30, 0)),
           meal_title:
             "Tomato soup; Pork fried rice, with mexican corn and mini spring roll. Frosted mocha cake",
           protein_offered: 36,
@@ -32,6 +35,7 @@ const mockMenu = {
         },
         {
           meal_role: "supper",
+          meal_time: new Date(Date.UTC(2000, 1, 1, 17, 30, 0)),
           meal_title:
             "Turkey sausage with mashed potatoes, sauteed vegetables and biscuit. Sliced strawberries.",
           protein_offered: 40,
