@@ -56,9 +56,9 @@ export default function MealTimeSidebar() {
   useEffect(() => {
     //   Set up to find the first meal and snack from (in this example) 1 hours before to 3 hours after Date.now()
     // Refreshes every 5 minutes
-    mealDisplaySelect(1, 3)
+    mealDisplaySelect(1, 12)
     setInterval(() => {
-        mealDisplaySelect(1, 3);
+        mealDisplaySelect(1, 12);
     }, 300000)
     
   }, []);
@@ -83,6 +83,10 @@ export default function MealTimeSidebar() {
 
       if (isMatch) {
         setMealOfDay(i);
+      }
+
+      if (i === menuData.days[dayOfMenu].meals.length && !isMatch) {
+          setDayOfMenu(dayOfMenu + 1)
       }
     });
 

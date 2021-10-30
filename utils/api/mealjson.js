@@ -34,7 +34,7 @@ const mockMenu = {
           fat_offered: 18,
         },
         {
-          meal_role: "supper",
+          meal_role: "Supper",
           meal_time: "17:30:00",
           meal_title:
             "Turkey sausage with mashed potatoes, sauteed vegetables and biscuit. Sliced strawberries.",
