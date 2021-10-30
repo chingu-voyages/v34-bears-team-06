@@ -13,49 +13,95 @@ import {
 } from "@chakra-ui/react";
 import TimeKeeper from "components/TimeKeeper";
 import menuData from "../utils/api/mealjson";
+import moment from "moment";
+// The following line comes from the momentjs.com/docs
+moment().format();
 
 export default function MealTimeSidebar() {
+  const [daysDiff, setDaysDiff] = useState(0);
+  const [dayOfMenu, setDayOfMenu] = useState(0);
+  const [mealOfDay, setMealOfDay] = useState(0);
+  const [snackOfDay, setSnackOfDay] = useState(0);
+  const menuInit = menuData.init_date;
+  const menuLength = menuData.days.length;
 
-    // const [menuInit, setMenuInit] = useState(new Date(`${menuData.init_date}`).toDateString())
-    // const [menuDateDiff, setMenuDateDiff] = useState(0)
-    const [daysDiff, setDaysDiff] = useState(0)
-    const [dayOfMenu, setDayOfMenu] = useState(0)
-    // const [menuLength, setMenuLength] = useState(menuData.days.length)
-    const menuInit = menuData.init_date
-    const menuLength = menuData.days.length
+  // Refreshes the component about menu info every 10 seconds (customizable)
+  useEffect(() => {
+    refreshDates();
+    setInterval(() => {
+      refreshDates();
+    }, 10000);
+  }, []);
 
-    // Refreshes the component about menu info every 10 seconds (customizable)    
-    useEffect(() => {
-        refreshDates()
-        setInterval(() => {
-          refreshDates()
-        }, 10000)
-      }, [])
-      
-      function refreshDates() {
-      // menuDateDiff: Days between today and menu initialization date
-      const menuDateDiff = Date.now() - Date.parse(menuInit)
-      // setMenuDateDiff(menuDateDiff)
-      const menuDateDiffInDays = menuDateDiff / 1000 / 60 / 60 / 24 // converts ms to days
-      setDaysDiff(menuDateDiffInDays)
-    }
+  function refreshDates() {
+    // menuDateDiff: Days between today and menu initialization date
+    const menuDateDiff = Date.now() - Date.parse(menuInit);
+    // setMenuDateDiff(menuDateDiff)
+    const menuDateDiffInDays = menuDateDiff / 1000 / 60 / 60 / 24; // converts ms to days
+    setDaysDiff(menuDateDiffInDays);
+  }
 
-    // useEffect(() => {
-    //     setMenuInit(new Date(`${menuData.init_date}`).toDateString())
-    // }, [menuData])
+  useEffect(() => {
+    // Sets dayOfMenu to a number in [0, menuLength)
+    setDayOfMenu(daysDiff % menuLength);
+    // console.log(
+    //   /*menuDateDiff, */ daysDiff,
+    //   menuLength,
+    //   dayOfMenu,
+    //   Math.floor(dayOfMenu),
+    //   Math.ceil(dayOfMenu)
+    // );
+  }, [daysDiff]);
 
-    // Moved this code to inside the setInterval, as is the same.
-    // useEffect(() => {
-    //     setDaysDiff(new Date(menuDateDiff) / 1000 / 60 / 60 / 24)
-    // }, [menuDateDiff])
+  useEffect(() => {
+    //   Set up to find the first meal and snack from (in this example) 1 hours before to 3 hours after Date.now()
+    // Refreshes every 5 minutes
+    mealDisplaySelect(1, 3)
+    setInterval(() => {
+        mealDisplaySelect(1, 3);
+    }, 300000)
+    
+  }, []);
 
-    // Removed dayOfMenu from array of dependencies
-    // as dayOfMenu is being modified here is very easy to fall in an infinite loop
-    useEffect(() => {
-        // Sets dayOfMenu to a number in [0, menuLength)
-        setDayOfMenu(daysDiff % menuLength)
-        console.log(/*menuDateDiff, */daysDiff, menuLength, dayOfMenu, Math.floor(dayOfMenu), Math.ceil(dayOfMenu))
-    }, [daysDiff])
+  function mealDisplaySelect(hoursBefore, hoursAfter) {
+    // Establishes time range Only seems to work with 'LLLL' format
+    let now = moment().format("LLLL");
+    hoursBefore *= -1;
+    let hoursBeforeNow = moment(now).add(hoursBefore, "hours");
+    let hoursAfterNow = moment(now).add(hoursAfter, "hours");
+
+    // isMatch is true if time of meal is found between hoursBeforeNow && hoursAfterNow, sets mealOfDay
+    menuData.days[dayOfMenu].meals.forEach((meal, i) => {
+      let mealTime = moment(meal.meal_time, "H:mm:ss");
+      let isMatch =
+        moment(mealTime, "H:mm:ss").isSameOrAfter(
+          moment(hoursBeforeNow, "H:mm:ss")
+        ) &&
+        moment(mealTime, "H:mm:ss").isSameOrBefore(
+          moment(hoursAfterNow, "H:mm:ss")
+        );
+
+      if (isMatch) {
+        setMealOfDay(i);
+      }
+    });
+
+    // isMatch is true if time of snack is found between hoursBeforeNow && hoursAfterNow, sets snackOfDay
+    menuData.days[dayOfMenu].snacks.forEach((snack, i) => {
+      let snackTime = moment(snack.meal_time, "H:mm:ss");
+      let isMatch =
+        moment(snackTime, "H:mm:ss").isSameOrAfter(
+          moment(hoursBeforeNow, "H:mm:ss")
+        ) &&
+        moment(snackTime, "H:mm:ss").isSameOrBefore(
+          moment(hoursAfterNow, "H:mm:ss")
+        );
+
+      if (isMatch) {
+        setSnackOfDay(i);
+      }
+    });
+  }
 
   return (
     <div>
@@ -77,19 +123,44 @@ export default function MealTimeSidebar() {
           align="stretch"
         >
           <Spacer />
-          <b>Day #{Math.ceil(dayOfMenu)}/{menuLength} of menu (or exactly {dayOfMenu} days into menu)</b>
-          <b>{daysDiff} Days between today's date and menu initialization date</b>
+          <b>
+            Day #{Math.ceil(dayOfMenu)}/{menuLength} of menu (or exactly{" "}
+            {dayOfMenu} days into menu)
+          </b>
+          <b>
+            {daysDiff} Days between today's date and menu initialization date
+          </b>
           <Heading as="h3" size="md">
-              Add Eating Info ⬇️⬇️
+            Add Eating Info ⬇️⬇️
           </Heading>
           <Box h="auto" p="10px" bg="yellow.200">
-            <b>Upcoming Meal - {menuData.days[(Math.ceil(dayOfMenu))].meals[0].meal_role}: </b>
-            <br/>
-            {menuData.days[Math.ceil(dayOfMenu)].meals[0].meal_title}
+            <b>
+              Upcoming Meal -{" "}
+              {
+                menuData.days[Math.ceil(dayOfMenu)].meals[`${mealOfDay}`]
+                  .meal_role
+              }
+              :{" "}
+            </b>
+            <br />
+            {
+              menuData.days[Math.ceil(dayOfMenu)].meals[`${mealOfDay}`]
+                .meal_title
+            }
           </Box>
           <Box h="auto" p="10px" bg="tomato">
-            <b>Upcoming Snack - Afternoon: </b>
-            Ginger Snaps (3) and cranberry juice (200 mL)
+            <b>
+              Upcoming Snack -{" "}
+              {
+                menuData.days[Math.ceil(dayOfMenu)].snacks[`${snackOfDay}`]
+                  .meal_role
+              }
+              :{" "}
+            </b>
+            {
+              menuData.days[Math.ceil(dayOfMenu)].snacks[`${snackOfDay}`]
+                .meal_title
+            }
           </Box>
           <Box h="40px" p="10px" bg="pink.100">
             <b>Update other meals/snacks</b>
