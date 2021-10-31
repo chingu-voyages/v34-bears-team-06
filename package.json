@@ -14,6 +14,7 @@
     "@emotion/react": "^11.5.0",
     "@emotion/styled": "^11.3.0",
     "framer-motion": "^4.1.17",
+    "moment": "^2.29.1",
     "mongoose": "^6.0.11",
     "next": "11.1.2",
     "next-connect": "^0.11.0",
