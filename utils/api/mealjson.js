@@ -7,6 +7,8 @@
 
 // A day has 100 g of protein, 300 g of carbs, and 50 g of fat
 
+// Using the meal object created at the bottom, 
+// we could replace the meals here
 const mockMenu = {
   easy_id: "FW2122",
   menu_title: "Fall-Winter 2021-2022",
@@ -421,4 +423,64 @@ const mockMenu = {
   ],
 };
 
-module.exports = mockMenu;
+/**
+ * Fake object to represent a meal model. 
+ *  - For to take one meal: meal[1]
+ *  - For to take all the meals in this object: Object.values(meal)
+ */
+const meal = {
+  1: {
+    meal_role: "Breakfast",
+    meal_time: new Date(Date.UTC(2000, 1, 1, 9, 30, 0)),
+    meal_title:
+      "Blueberries. Cinnamon oatmeal with hard boiled egg and whole wheat toast",
+    protein_offered: 24,
+    carbs_offered: 72,
+    fat_offered: 12,
+  },
+  2: {
+    meal_role: "Lunch",
+    meal_time: new Date(Date.UTC(2000, 1, 1, 12, 30, 0)),
+    meal_title:
+      "Tomato soup; Pork fried rice, with mexican corn and mini spring roll. Frosted mocha cake",
+    protein_offered: 36,
+    carbs_offered: 108,
+    fat_offered: 18,
+  },
+  3: {
+    meal_role: "supper",
+    meal_time: new Date(Date.UTC(2000, 1, 1, 17, 30, 0)),
+    meal_title:
+      "Turkey sausage with mashed potatoes, sauteed vegetables and biscuit. Sliced strawberries.",
+    protein_offered: 40,
+    carbs_offered: 120,
+    fat_offered: 20,
+  },
+  4: {
+    meal_role: "Breakfast",
+    meal_title:
+      "Half banana. Oatbran cereal with scrambled eggs and whole wheat toast",
+    protein_offered: 24,
+    carbs_offered: 72,
+    fat_offered: 12,
+  },
+  5: {
+    meal_role: "Lunch",
+    meal_title:
+      "Turkey rice soup. Grilled ham and cheese sandwich with carrot raisin salad. Butterscotch pudding",
+    protein_offered: 36,
+    carbs_offered: 108,
+    fat_offered: 18,
+  },
+  6: {
+    meal_role: "Supper",
+    meal_title:
+      "Chicken supreme w/ rosemary and garlic potatoes, Asian vegetables and whole wheat bread. Apple crisp.",
+    protein_offered: 40,
+    carbs_offered: 120,
+    fat_offered: 20,
+  },
+}
+
+export default mockMenu;
+export { meal }

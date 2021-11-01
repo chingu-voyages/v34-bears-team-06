@@ -4,6 +4,7 @@ import TopDashboard from "components/TopDashboard";
 import MealTimeSidebar from "components/MealTimeSidebar";
 import CalorieGoals from "components/CalorieGoals";
 import MenuWeek from "components/MenuWeek";
+import CaloriesGraph from "components/CaloriesGraph"
 
 export default function Dashboard() {
   return (
@@ -12,6 +13,7 @@ export default function Dashboard() {
       <Flex justify="space-around">
         <MealTimeSidebar />
         <Flex direction="column">
+          <CaloriesGraph />
           <CalorieGoals />
           <MenuWeek />
         </Flex>
