@@ -1,5 +1,13 @@
 import { useState, useEffect } from "react";
-import { Box, Image, Flex, Spacer, Badge } from "@chakra-ui/react";
+import {
+  Box,
+  Image,
+  Flex,
+  Spacer,
+  Badge,
+
+} from "@chakra-ui/react";
+import TopDashboardModal from "./TopDashboardModal";
 
 export default function TopDashboard() {
   const [userDB, setUserDB] = useState({
@@ -69,16 +77,8 @@ export default function TopDashboard() {
           <Badge colorScheme="red">Calorie Deficit</Badge>
         </Box>
         <Spacer />
-        <Box
-          as="button"
-          borderRadius="md"
-          bg="orange"
-          color="black"
-          px={4}
-          h={8}
-        >
-          Edit Details
-        </Box>
+        <TopDashboardModal/>
+        
       </Flex>
     </Box>
   );
