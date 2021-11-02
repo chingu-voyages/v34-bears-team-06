@@ -1,32 +1,7 @@
 import { useState, useEffect } from "react";
 import { Box, Image, Flex, Spacer, Badge } from "@chakra-ui/react";
 
-export default function CalorieGoals() {
-  const [userDB, setUserDB] = useState({
-    id: "1234",
-    first_name: "John",
-    last_name: "Doe",
-    date_of_birth: "1977-01-01T23:28:56.782+00:00",
-    weight: 75,
-    height: 175,
-  });
-
-//   reused code from TopDashboard
-  async function getResident() {
-    const response = await fetch("/api/resident?first_name=Daniel");
-    console.log(response);
-    const data = await response.json();
-    const firstResident = data.resident[0];
-    console.log(firstResident);
-    if (firstResident !== undefined) {
-      setUserDB(firstResident);
-    }
-  }
-
-  useEffect(() => {
-    getResident();
-  }, []);
-//   End of re-used code
+export default function CalorieGoals({ userDB, ...props }) {
 
   // Similar code to sibling component
   function returnAge(dob) {

@@ -20,7 +20,6 @@ import {
   ModalBody,
 } from "@chakra-ui/react";
 import TimeKeeper from "components/TimeKeeper";
-import menuData from "../utils/api/mealjson";
 import moment from "moment";
 // The following line comes from the momentjs.com/docs
 moment().format();

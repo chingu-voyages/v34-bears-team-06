@@ -5,9 +5,8 @@ import {
   HStack,
   Text,
 } from "@chakra-ui/react";
-import menuData from "../utils/api/mealjson";
 
-export default function MenuWeek() {
+export default function MenuWeek({ menuData, ...props }) {
   const today = menuData.days[0];
   const tomorrow = menuData.days[1];
 
