@@ -24,7 +24,7 @@ import moment from "moment";
 // The following line comes from the momentjs.com/docs
 moment().format();
 
-export default function MealTimeSidebar() {
+export default function MealTimeSidebar({menuData}) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [daysDiff, setDaysDiff] = useState(0);
   const [dayOfMenu, setDayOfMenu] = useState(0);
