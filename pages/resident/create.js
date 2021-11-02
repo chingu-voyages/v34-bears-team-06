@@ -62,17 +62,6 @@ export default function create() {
       
     };
 
-//   console.log(
-//     weight,
-//     height,
-//     yearOfBirth,
-//     dateOfBirth,
-//     monthOfBirth,
-//     lastName,
-//     firstName,
-//     dob.toISOString()
-//   );
-
   return (
     <>
       <form onSubmit={handleSubmit}>
