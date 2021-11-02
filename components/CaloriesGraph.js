@@ -8,7 +8,6 @@ import {
   YAxis,
   Tooltip,
 } from "recharts";
-import eatingHistory from "utils/api/eatingHistory";
 import { transformEatingHistory } from "utils";
 
 /**
@@ -16,7 +15,7 @@ import { transformEatingHistory } from "utils";
  * @todo
  * - [ ] Display calories goal
  */
-export default function CaloriesGraph({ ...props }) {
+export default function CaloriesGraph({ eatingHistory, ...props }) {
   const data = transformEatingHistory(eatingHistory);
 
   return (
