@@ -31,6 +31,10 @@ var resident = new Schema({
       type: Schema.Types.ObjectId,  //Schema.Types.ObjectId // Schema.ObjectId
       ref: "Meal"
     },
+    // This will combine the menu's day#, the loop, and the meal
+    eating_code: {
+      type: String
+    },
     amount_eaten: {
       type: Number
     },

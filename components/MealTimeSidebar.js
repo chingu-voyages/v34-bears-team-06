@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import {
+  useDisclosure,
   Box,
   Button,
   Image,
@@ -11,6 +12,12 @@ import {
   VStack,
   StackDivider,
   Heading,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalCloseButton,
+  ModalBody,
 } from "@chakra-ui/react";
 import TimeKeeper from "components/TimeKeeper";
 import menuData from "../utils/api/mealjson";
@@ -19,6 +26,7 @@ import moment from "moment";
 moment().format();
 
 export default function MealTimeSidebar() {
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const [daysDiff, setDaysDiff] = useState(0);
   const [dayOfMenu, setDayOfMenu] = useState(0);
   const [mealOfDay, setMealOfDay] = useState(0);
@@ -167,11 +175,32 @@ export default function MealTimeSidebar() {
           <Heading as="h3" size="md">
             Add Eating Info ⬇️⬇️
           </Heading>
-          <Box as="Button" h="40px" p="10px" bg="pink.100" height="auto">
+          <Box
+            as="button"
+            h="40px"
+            p="10px"
+            bg="pink.100"
+            height="auto"
+            onClick={onOpen}
+          >
             <Heading as="h3" size="lg">
               <b>Add or Update Eating Information</b>
             </Heading>
           </Box>
+
+          {/* How to put a modal within a modal: https://stackoverflow.com/questions/65988633/chakra-ui-using-multiple-models-in-a-single-component */}
+          <Modal isOpen={isOpen} onClose={onClose} size="full">
+            <ModalOverlay />
+            <ModalContent>
+              <ModalHeader>Add/Edit Meal-Time Eating Information</ModalHeader>
+              <ModalCloseButton />
+              <ModalBody>
+                This is a full-sized modal. This is where we will place the
+                buttons to add/edit eating information. You can click the 'X'
+                button on the top right to leave the page.
+              </ModalBody>
+            </ModalContent>
+          </Modal>
         </VStack>
       </Box>
     </div>
