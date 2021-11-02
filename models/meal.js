@@ -2,8 +2,10 @@ import { Schema, model } from 'mongoose';
 
 var meal = new Schema({
     meal_role: {
-        type: String,
-        enum: ["Breakfast", "AM Snack", "Lunch", "PM Snack", "Supper", "HS Snack"]
+        type: String
+    },
+    meal_time: {
+        type: String
     },
     meal_title: {
         type: String,

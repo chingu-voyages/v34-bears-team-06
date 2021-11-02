@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import {
   Box,
+  Button,
   Image,
   Flex,
   Spacer,
@@ -55,11 +56,10 @@ export default function MealTimeSidebar({ menuData, ...props }) {
   useEffect(() => {
     //   Set up to find the first meal and snack from (in this example) 1 hours before to 3 hours after Date.now()
     // Refreshes every 5 minutes
-    mealDisplaySelect(1, 3)
+    mealDisplaySelect(1, 12);
     setInterval(() => {
-        mealDisplaySelect(1, 3);
-    }, 300000)
-    
+      mealDisplaySelect(1, 12);
+    }, 300000);
   }, []);
 
   function mealDisplaySelect(hoursBefore, hoursAfter) {
@@ -82,6 +82,10 @@ export default function MealTimeSidebar({ menuData, ...props }) {
 
       if (isMatch) {
         setMealOfDay(i);
+      }
+
+      if (i === menuData.days[dayOfMenu].meals.length && !isMatch) {
+        setDayOfMenu(dayOfMenu + 1);
       }
     });
 
@@ -129,9 +133,7 @@ export default function MealTimeSidebar({ menuData, ...props }) {
           <b>
             {daysDiff} Days between today's date and menu initialization date
           </b>
-          <Heading as="h3" size="md">
-            Add Eating Info ⬇️⬇️
-          </Heading>
+
           <Box h="auto" p="10px" bg="yellow.200">
             <b>
               Upcoming Meal -{" "}
@@ -161,8 +163,13 @@ export default function MealTimeSidebar({ menuData, ...props }) {
                 .meal_title
             }
           </Box>
-          <Box h="40px" p="10px" bg="pink.100">
-            <b>Update other meals/snacks</b>
+          <Heading as="h3" size="md">
+            Add Eating Info ⬇️⬇️
+          </Heading>
+          <Box as="Button" h="40px" p="10px" bg="pink.100" height="auto">
+            <Heading as="h3" size="lg">
+              <b>Add or Update Eating Information</b>
+            </Heading>
           </Box>
         </VStack>
       </Box>

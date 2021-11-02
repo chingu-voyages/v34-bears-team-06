@@ -1,4 +1,5 @@
 import { Schema, model } from 'mongoose';
+import Meal from './meal';
 
 var menu = new Schema({
   menu_title: {
@@ -9,10 +10,17 @@ var menu = new Schema({
     type: Date,
     required: true
   },
-  days: {
-    type: Schema.Types.ObjectId,
-    ref: "Day"
-  },
+  days: 
+    [ 
+      {
+        day_number: {
+          type: Number
+        },
+        meals: [Meal],
+        snacks: [Meal]
+      }
+    ]
+    ,
 });
 
 var Menu = model('Menu', menu);
