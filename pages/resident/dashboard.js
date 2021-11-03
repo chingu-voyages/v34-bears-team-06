@@ -19,6 +19,7 @@ export default function Dashboard() {
     weight: 75,
     height: 175,
   });
+  const [menu, setMenu] = useState(() => getMenu())
   async function getResident() {
     const response = await fetch("/api/resident");
     console.log(response);
@@ -26,6 +27,15 @@ export default function Dashboard() {
     const firstResident = data.resident[1];
     console.log(firstResident);
     setUserDB(firstResident);
+  }
+
+  async function getMenu() {
+    const response = await fetch("/api/menu");
+    console.log(response);
+    const data = await response.json();
+    const firstMenu = data.menus[0];
+    console.log(firstMenu);
+    return firstMenu
   }
 
   useEffect(() => {
@@ -36,12 +46,12 @@ export default function Dashboard() {
   return (
     <div>
       <TopDashboard userDB={userDB}/>
-      <Flex justify="space-around">
-        <MealTimeSidebar menuData={mockMenu} />
+      <Flex justify="center" >
+        <MealTimeSidebar menuData={menu} />
         <Flex direction="column">
-          <CaloriesGraph eatingHistory={eatingHistory}/>
+          <CaloriesGraph eatingHistory={userDB.eating_history || eatingHistory}/>
           <CalorieGoals userDB={userDB} />
-          <MenuWeek menuData={mockMenu}/>
+          <MenuWeek menuData={menu}/>
         </Flex>
       </Flex>
     </div>

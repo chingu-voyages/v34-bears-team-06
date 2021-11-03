@@ -4,6 +4,10 @@ var meal = new Schema({
     meal_role: {
         type: String
     },
+    unique_code: {
+        type: String,
+        required: true
+    },
     meal_time: {
         type: String
     },

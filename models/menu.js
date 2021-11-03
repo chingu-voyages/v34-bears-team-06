@@ -1,27 +1,34 @@
-import { Schema, model } from 'mongoose';
-import Meal from './meal';
+import { Schema, model } from "mongoose";
 
 var menu = new Schema({
   menu_title: {
     type: String,
-    required: true
+    required: true,
   },
   init_date: {
     type: Date,
-    required: true
+    required: true,
   },
-  days: 
-    [ 
-      {
-        day_number: {
-          type: Number
+  days: [
+    {
+      day_number: {
+        type: Number,
+      },
+      meals: [
+        {
+          type: Schema.Types.ObjectId, //Schema.Types.ObjectId // Schema.ObjectId
+          ref: "Meal",
         },
-        meals: [Meal],
-        snacks: [Meal]
-      }
-    ]
-    ,
+      ],
+      snacks: [
+        {
+          type: Schema.Types.ObjectId, //Schema.Types.ObjectId // Schema.ObjectId
+          ref: "Meal",
+        },
+      ],
+    },
+  ],
 });
 
-var Menu = model('Menu', menu);
+var Menu = model("Menu", menu);
 export default Menu;

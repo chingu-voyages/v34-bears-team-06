@@ -1,0 +1,39 @@
+{
+  "first_name": "John",
+  "last_name": "Snow",
+  "date_of_birth": "1875-03-22",
+  "weight": 65,
+  "height": 177,
+  "eating_history": [
+    {
+      "day": "November 1, 2021",
+      "unique_code": "D2M1B",
+      "amount_eaten": 0.75
+    },
+    {
+      "day": "November 1, 2021",
+      "unique_code": "D2M2L",
+      "amount_eaten": 0.7
+    },
+    {
+      "day": "November 1, 2021",
+      "unique_code": "D2M3S",
+      "amount_eaten": 0.5
+    },
+    {
+      "day": "November 1, 2021",
+      "unique_code": "D2S1A",
+      "amount_eaten": 0.4
+    },
+    {
+      "day": "November 1, 2021",
+      "unique_code": "D2S2P",
+      "amount_eaten": 0.8
+    },
+    {
+      "day": "November 1, 2021",
+      "unique_code": "D2S3H",
+      "amount_eaten": 0.7
+    }
+  ]
+}

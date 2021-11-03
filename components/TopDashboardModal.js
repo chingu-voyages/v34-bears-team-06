@@ -24,6 +24,9 @@ import {
 } from "@chakra-ui/react";
 
 import React, { useState, useEffect } from "react";
+import { useForm } from "react-hook-form";
+import moment from 'moment';
+moment().format();
 
 export default function TopDashboardModal() {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -52,6 +55,10 @@ export default function TopDashboardModal() {
     height: 999,
   });
 
+  const { register, handleSubmit } = useForm({
+    defaultValues: userDB
+})
+
   async function getResident() {
     const response = await fetch("/api/resident?first_name=Daniel");
     console.log(response);
@@ -67,7 +74,7 @@ export default function TopDashboardModal() {
     getResident();
   }, []);
 
-  const handleSubmit = async (event) => {
+  const onSubmit = async (event) => {
     event.preventDefault();
     let dataObject = {
       first_name: firstName,
@@ -101,11 +108,12 @@ export default function TopDashboardModal() {
           <ModalHeader>Edit Resident</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit(onSubmit)}>
               <FormControl id="first_name" isRequired>
                 <FormLabel>First name</FormLabel>
                 <Input
                   name={"first_name"}
+                //   ref={register}
                   defaultValue={firstName}
                   onChange={(event) => setFirstName(event.target.value)}
                   placeholder="First name"
@@ -113,6 +121,7 @@ export default function TopDashboardModal() {
                 <FormLabel>Last name</FormLabel>
                 <Input
                   name={"last_name"}
+                  defaultValue={lastName}
                   onChange={(event) => setLastName(event.target.value)}
                   placeholder="Last name"
                 />
@@ -120,7 +129,7 @@ export default function TopDashboardModal() {
                 <NumberInput
                   size="md"
                   maxW={20}
-                  defaultValue={12}
+                //   defaultValue={}
                   min={1}
                   max={12}
                   value={monthOfBirth}
