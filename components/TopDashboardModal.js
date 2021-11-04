@@ -34,14 +34,6 @@ export default function TopDashboardModal() {
   //   Almost 100% same code as 'resident/create' path; might require a common component
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [dateOfBirth, setDateOfBirth] = useState(new Date().getDate());
-  const [monthOfBirth, setMonthOfBirth] = useState(new Date().getMonth() + 1);
-  const [yearOfBirth, setYearOfBirth] = useState(new Date().getYear() + 1900);
-
-  console.log(yearOfBirth, monthOfBirth, dateOfBirth)
-
-  const [height, setHeight] = useState(0);
-  const [weight, setWeight] = useState(0);
 
   const [userDB, setUserDB] = useState({
     id: "1234",
@@ -76,6 +68,12 @@ export default function TopDashboardModal() {
     getResident();
     console.log(dob)
   }, []);
+
+  const [dateOfBirth, setDateOfBirth] = useState(moment(userDB.date_of_birth).format("D"));
+  const [monthOfBirth, setMonthOfBirth] = useState(moment(userDB.date_of_birth).format("M"));
+  const [yearOfBirth, setYearOfBirth] = useState(moment(userDB.date_of_birth).format("YYYY"));
+  const [height, setHeight] = useState(userDB.height);
+  const [weight, setWeight] = useState(userDB.weight);
 
   const onSubmit = async (event) => {
     event.preventDefault();
@@ -251,7 +249,7 @@ export default function TopDashboardModal() {
                   allowMouseWheel
                   size="md"
                   maxW={100}
-                  defaultValue={150}
+                //   defaultValue={150}
                   min={100}
                   max={300}
                   onChange={(valueAsString, valueAsNumber) =>
@@ -269,7 +267,7 @@ export default function TopDashboardModal() {
                 {...register("height")}
                   flex="1"
                   value={height}
-                  defaultValue={150}
+                //   defaultValue={150}
                   maxW={500}
                   min={100}
                   max={300}
@@ -290,7 +288,7 @@ export default function TopDashboardModal() {
                   value={weight}
                   size="md"
                   maxW={100}
-                  defaultValue={weight}
+                //   defaultValue={weight}
                   min={40}
                   max={400}
                   onChange={(valueAsString, valueAsNumber) =>
@@ -307,7 +305,7 @@ export default function TopDashboardModal() {
                   {...register("weight")}
                   flex="1"
                   value={weight}
-                  defaultValue={weight}
+                //   defaultValue={weight}
                   maxW={800}
                   min={40}
                   max={400}
