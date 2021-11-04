@@ -53,7 +53,7 @@ export default function Dashboard() {
   }
 
   return (
-    <div>
+    <div suppressHydrationWarning>
       <TopDashboard userDB={userDB}/>
       <Flex justify="center" >
         <MealTimeSidebar menuData={menu || mockMenu} />
