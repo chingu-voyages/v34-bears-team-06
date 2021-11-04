@@ -20,6 +20,7 @@ import {
   ModalBody,
 } from "@chakra-ui/react";
 import TimeKeeper from "components/TimeKeeper";
+import EatingHistoryModal from "./EatingHistoryModal";
 import moment from "moment";
 // The following line comes from the momentjs.com/docs
 moment().format();
@@ -197,6 +198,7 @@ export default function MealTimeSidebar({menuData}) {
                 This is a full-sized modal. This is where we will place the
                 buttons to add/edit eating information. You can click the 'X'
                 button on the top right to leave the page.
+                <EatingHistoryModal/>
               </ModalBody>
             </ModalContent>
           </Modal>
