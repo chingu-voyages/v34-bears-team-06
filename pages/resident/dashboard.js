@@ -44,14 +44,14 @@ export default function Dashboard() {
   }, [])
 
   return (
-    <div>
+    <div suppressHydrationWarning>
       <TopDashboard userDB={userDB}/>
       <Flex justify="center" >
-        <MealTimeSidebar menuData={menu} />
+        <MealTimeSidebar menuData={mockMenu || menu} />
         <Flex direction="column">
           <CaloriesGraph eatingHistory={userDB.eating_history || eatingHistory}/>
           <CalorieGoals userDB={userDB} />
-          <MenuWeek menuData={menu}/>
+          <MenuWeek menuData={mockMenu || menu}/>
         </Flex>
       </Flex>
     </div>
