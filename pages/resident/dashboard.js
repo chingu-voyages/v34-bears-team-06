@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Box, Image, Flex, Spacer, Badge } from "@chakra-ui/react";
+import { Flex } from "@chakra-ui/react";
 import TopDashboard from "components/TopDashboard";
 import MealTimeSidebar from "components/MealTimeSidebar";
 import CalorieGoals from "components/CalorieGoals";
@@ -19,39 +19,48 @@ export default function Dashboard() {
     weight: 75,
     height: 175,
   });
-  const [menu, setMenu] = useState(() => getMenu())
+  const [menu, setMenu] = useState({
+  menu_title: "Sample",
+  init_date: "November 28 1999 12:00:00",
+  days: []
+  })
   async function getResident() {
-    const response = await fetch("/api/resident");
-    console.log(response);
+    const response = await fetch("/api/resident?first_name=John&populate=true");
+    console.log("[dashboard][getResident] response:", response);
     const data = await response.json();
-    const firstResident = data.resident[1];
-    console.log(firstResident);
+    const firstResident = data.resident[0];
+    console.log("[dashboard][getResident] firstResident:", firstResident);
     setUserDB(firstResident);
   }
 
   async function getMenu() {
-    const response = await fetch("/api/menu");
-    console.log(response);
+    const response = await fetch("/api/menu?populate=true");
+    console.log("[dashboard][getMenu] response:", response);
     const data = await response.json();
     const firstMenu = data.menus[0];
-    console.log(firstMenu);
-    return firstMenu
+    console.log("[dashboard][getMenu] firstMenu:", firstMenu);
+    setMenu(firstMenu)
   }
 
   useEffect(() => {
     console.log("first render")
     getResident()
+    getMenu()
   }, [])
+
+  if (!menu || !menu.days || !menu.days[0]) {
+    return <p>Loading</p>
+  }
 
   return (
     <div>
       <TopDashboard userDB={userDB}/>
       <Flex justify="center" >
-        <MealTimeSidebar menuData={menu} />
+        <MealTimeSidebar menuData={menu || mockMenu} />
         <Flex direction="column">
           <CaloriesGraph eatingHistory={userDB.eating_history || eatingHistory}/>
           <CalorieGoals userDB={userDB} />
-          <MenuWeek menuData={menu}/>
+          <MenuWeek menuData={menu || mockMenu}/>
         </Flex>
       </Flex>
     </div>

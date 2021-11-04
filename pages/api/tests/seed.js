@@ -1,17 +1,11 @@
 import nc from "next-connect";
-import database from "utils/api/database";
-import mongoose from "mongoose";
-import Seed from "seeds/seed";
+import Seed, { SeedEatingHistory, SeedMenu, getMealsByUniqueCode, getMealsAndSnack, getMenuDays } from "seeds/seed";
 
 const handler = nc();
 
 handler.get(async (req, res) => {
-  try {
-    await Seed();
-    res.json({ msg: "Success seeding database" });
-  } catch (err) {
-    res.json({ msg: "Error seeding database", err });
-  }
+    const menu = await SeedMenu()
+    res.json({ msg: "Success seeding menu", menu });
 });
 
 export default handler;

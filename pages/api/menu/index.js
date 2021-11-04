@@ -7,7 +7,12 @@ const handler = nc();
 handler.get(async (req, res) => {
   const { MenuModel } = await database();
   const { query } = req;
-  const menus = await MenuModel.find(query);
+  let menus
+  if (query.populate) {
+    menus = await MenuModel.find(query).populate("days.meals days.snacks");
+  } else {
+    menus = await MenuModel.find(query);
+  }
   res.json({ msg: "Menus list", menus });
 });
 

@@ -9,11 +9,20 @@ export function transformEatingHistory(eatingHistory) {
     const date = eatingHistory[i];
     const dayCalories = getMealCalories(date.mealId, date.amount_eaten);
     totalDayCalories += dayCalories;
-
+    // If date.day is not a Date object, then convert it to it
+    const dateDay = date.day instanceof Date ? date.day : new Date(date.day);
+    // The same with the next date
+    let nextDateDay = {};
+    if (eatingHistory[i + 1]) {
+      nextDateDay =
+        eatingHistory[i + 1].day instanceof Date
+          ? eatingHistory[i + 1].day
+          : new Date(eatingHistory[i + 1].day);
+    }
     // If it's last day or day will change
-    if (!eatingHistory[i + 1] || date.day.getDate() !== eatingHistory[i + 1].day.getDate()) {
+    if (!eatingHistory[i + 1] || dateDay.getDate() !== nextDateDay.getDate()) {
       const _finalData = {
-        day: `${date.day.getMonth()}/${date.day.getDate()}`,
+        day: `${dateDay.getMonth()}/${dateDay.getDate()}`,
         calories: totalDayCalories,
       };
       finalData.push(_finalData);

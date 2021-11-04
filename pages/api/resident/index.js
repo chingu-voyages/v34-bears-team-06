@@ -7,7 +7,12 @@ const handler = nc();
 handler.get(async (req, res) => {
   const { ResidentModel } = await database()
   const { query } = req
-  const resident = await ResidentModel.find(query);
+  let resident
+  if (query.populate) {
+    resident = await ResidentModel.find(query).populate("eating_history.mealId");
+  } else {
+    resident = await ResidentModel.find(query);
+  }
   res.json({ msg: "Residents list", resident })
 });
 
