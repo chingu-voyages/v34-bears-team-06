@@ -44,6 +44,7 @@ export default function EatingHistoryModal() {
     }, 5000);
   }, []);
 
+//   Basic API call to get Data. Can be passed through props
   async function getResident() {
     const response = await fetch("/api/resident?first_name=John");
     console.log(response);
@@ -56,6 +57,7 @@ export default function EatingHistoryModal() {
     }
   }
 
+  //   Divides the array into subarrays [[Dec 1s], [Dec 2s], [Dec 3s]]
   async function dateDivide(array) {
     if (array === undefined) return array;
     if (array.length < 2) return array;
@@ -85,37 +87,57 @@ export default function EatingHistoryModal() {
     return <div></div>;
   } else {
     return (
-      <div>
-        {eatingHistory.map((menuDay, index, array) => {
-          return (
-            <div key={index}>
-              <b>Date: </b>
-              {menuDay.day}
-              <b>Amount Eaten: </b>
-              {menuDay.amount_eaten}
-              <b>Meal ID: </b>
-              {menuDay.mealId}
-              <Box>
-                <VStack>
-                  {/* {menuDay.map((meal, i, a) => {
-                    return (
-                      <HStack>
-                        {meal.day}
-                        <b>Date: </b>
-                        {e.day}
-                        <b>Amount Eaten: </b>
-                        {e.amount_eaten}
-                        <b>Meal ID: </b>
-                        {e.mealId}
-                      </HStack>
-                    );
-                  })} */}
-                </VStack>
-              </Box>
-            </div>
-          );
-        })}
-      </div>
+      <Box>
+        <VStack>
+          {eatingHistory.map((menuDay, index, array) => {
+            return (
+              <div key={index}>
+                <b>Date: </b>
+                {menuDay.day}
+                <b>Amount Eaten: </b>
+                {menuDay.amount_eaten}
+                <b>Meal ID: </b>
+                {menuDay.mealId}
+
+                <MenuDayArray menuDay={menuDay} />
+
+                {/* {menuDay.map((meal, i, a) => {
+                        return (
+                        <HStack>
+                            {meal.day}
+                            <b>Date: </b>
+                            {e.day}
+                            <b>Amount Eaten: </b>
+                            {e.amount_eaten}
+                            <b>Meal ID: </b>
+                            {e.mealId}
+                        </HStack>
+                        );
+                    })} */}
+              </div>
+            );
+          })}
+        </VStack>
+      </Box>
     );
   }
+}
+
+function MenuDayArray({ menuDay, ...props }) {
+  return (
+    <HStack>
+      {/* <b>Date: </b>
+      {menuDay.day}
+      <b>Amount Eaten: </b>
+      {menuDay.amount_eaten}
+      <b>Meal ID: </b>
+      {menuDay.mealId} */}
+
+      {/* {menuDay.map((ele, ind, arr) => {
+            return (
+                <div>ele.day</div>
+            )
+        })} */}
+    </HStack>
+  );
 }
