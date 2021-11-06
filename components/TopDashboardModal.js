@@ -1,6 +1,5 @@
 import {
   useDisclosure,
-  Box,
   Button,
   Modal,
   ModalOverlay,
@@ -8,7 +7,6 @@ import {
   ModalHeader,
   ModalCloseButton,
   ModalBody,
-  ModalFooter,
   FormControl,
   FormLabel,
   Input,
@@ -26,68 +24,60 @@ import {
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import moment from "moment";
+import { updateResident } from "utils/api"
+
 moment().format();
 
-export default function TopDashboardModal() {
+export default function TopDashboardModal({ resident }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  //   Almost 100% same code as 'resident/create' path; might require a common component
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
+  const [dob, setDob] = useState(new Date(resident.date_of_birth));
+  const [dateOfBirth, setDateOfBirth] = useState(
+    moment(resident.date_of_birth).day()
+  );
+  const [monthOfBirth, setMonthOfBirth] = useState(
+    moment(resident.date_of_birth).month()
+  );
+  const [yearOfBirth, setYearOfBirth] = useState(
+    moment(resident.date_of_birth).year()
+  );
+  const [height, setHeight] = useState(resident.height);
+  const [weight, setWeight] = useState(resident.weight);
 
-  const [userDB, setUserDB] = useState({
-    id: "1234",
-    first_name: "John",
-    last_name: "Doe",
-    date_of_birth: "2000-01-01T23:28:56.782+00:00",
-    weight: 300,
-    height: 390,
-  });
-
-  const [dob, setDob] = React.useState(new Date(userDB.date_of_birth));
   useEffect(() => {
-    setDob(moment(`${yearOfBirth}-${monthOfBirth}-${dateOfBirth}`).format("YYYY-M-D"));
+    setDob(moment({ y: yearOfBirth, M: monthOfBirth, d: dateOfBirth }));
   }, [dateOfBirth, monthOfBirth, yearOfBirth]);
 
   const { register, handleSubmit } = useForm({
-    defaultValues: userDB,
+    defaultValues: {
+      first_name: resident.first_name,
+      last_name: resident.last_name,
+    },
   });
 
-  async function getResident() {
-    const response = await fetch("/api/resident?first_name=Daniel");
-    console.log(response);
-    const data = await response.json();
-    const firstResident = data.resident[0];
-    console.log(firstResident);
-    if (firstResident !== undefined) {
-      setUserDB(await firstResident);
-    }
-  }
-
-  useEffect(() => {
-    getResident();
-    console.log(dob)
-  }, []);
-
-  const [dateOfBirth, setDateOfBirth] = useState(moment(userDB.date_of_birth).format("D"));
-  const [monthOfBirth, setMonthOfBirth] = useState(moment(userDB.date_of_birth).format("M"));
-  const [yearOfBirth, setYearOfBirth] = useState(moment(userDB.date_of_birth).format("YYYY"));
-  const [height, setHeight] = useState(userDB.height);
-  const [weight, setWeight] = useState(userDB.weight);
-
-  const onSubmit = async (event) => {
-    event.preventDefault();
-    let dataObject = {
-      first_name: firstName,
-      last_name: lastName,
-      date_of_birth: dob,
+  /**
+   * @param formData Its an object containing only the props. passed in the object passed
+   * to `useForm` hook. Right now is `first_name` and `last_name`
+   */
+  const onSubmit = async (formData) => {
+    let residentData = {
+      ...formData,
+      date_of_birth: dob.toISOString(),
       height,
       weight,
     };
-
-    if (firstName !== "" && lastName !== "" && height !== 0 && weight !== 0) {
+    console.log("[TopDashboardModal][onSubmit] residentData:", residentData);
+    if (
+      formData.first_name !== "" &&
+      formData.last_name !== "" &&
+      height !== 0 &&
+      weight !== 0
+    ) {
       console.log("cannot submit until these are filled");
     }
+    // API call
+    const res = await updateResident(resident._id, residentData)
+    // use res.error to know if there was an error and display useful information to the client
   };
 
   return (
@@ -112,31 +102,22 @@ export default function TopDashboardModal() {
             <form onSubmit={handleSubmit(onSubmit)}>
               <FormControl id="first_name" isRequired>
                 <FormLabel>First name</FormLabel>
-                <Input
-                  {...register("first_name")}
-                  //   ref={register}
-                  defaultValue={firstName}
-                  onChange={(event) => setFirstName(event.target.value)}
-                  placeholder="First name"
-                />
+                <Input {...register("first_name")} placeholder="First name" />
                 <FormLabel>Last name</FormLabel>
-                <Input
-                  {...register("last_name")}
-                  defaultValue={lastName}
-                  onChange={(event) => setLastName(event.target.value)}
-                  placeholder="Last name"
-                />
+                <Input {...register("last_name")} placeholder="Last name" />
                 <FormLabel>Date of Birth</FormLabel>
                 <NumberInput
                   size="md"
                   maxW={20}
-                  defaultValue={moment(dob).format("M")}
                   min={1}
                   max={12}
-                  value={monthOfBirth}
-                  onChange={(valueAsString, valueAsNumber) =>
-                    setMonthOfBirth(valueAsNumber)
-                  }
+                  // The "+1" is for fixing month zero indexed
+                  value={monthOfBirth + 1}
+                  onChange={(valueAsString, valueAsNumber) => {
+                    console.log("Changing month of birth to:", valueAsNumber);
+                    // The "-1" is for fixing month zero indexed
+                    setMonthOfBirth(valueAsNumber - 1);
+                  }}
                 >
                   <NumberInputField />
                   <NumberInputStepper>
@@ -146,13 +127,12 @@ export default function TopDashboardModal() {
                 </NumberInput>
                 <Slider
                   flex="1"
-                  value={monthOfBirth}
-                  defaultValue={moment(dob).format("M")}
+                  value={monthOfBirth + 1}
                   maxW={300}
                   min={1}
                   max={12}
                   onChange={(value) => {
-                    setMonthOfBirth(value);
+                    setMonthOfBirth(value - 1);
                   }}
                 >
                   <SliderTrack>
@@ -161,14 +141,13 @@ export default function TopDashboardModal() {
                   <SliderThumb
                     fontSize="sm"
                     boxSize="32px"
-                    children={monthOfBirth}
+                    children={monthOfBirth + 1}
                   />
                 </Slider>
 
                 <NumberInput
                   size="md"
                   maxW={20}
-                  defaultValue={31}
                   min={1}
                   max={31}
                   value={dateOfBirth}
@@ -185,7 +164,6 @@ export default function TopDashboardModal() {
                 <Slider
                   flex="1"
                   value={dateOfBirth}
-                  defaultValue={31}
                   maxW={300}
                   min={1}
                   max={31}
@@ -206,9 +184,8 @@ export default function TopDashboardModal() {
                 <NumberInput
                   size="md"
                   maxW={100}
-                  defaultValue={1970}
                   min={1900}
-                  max={new Date().getFullYear()}
+                  max={moment().year()}
                   value={yearOfBirth}
                   onChange={(valueAsString, valueAsNumber) =>
                     setYearOfBirth(valueAsNumber)
@@ -224,10 +201,9 @@ export default function TopDashboardModal() {
                 <Slider
                   flex="1"
                   value={yearOfBirth}
-                  defaultValue={1970}
                   maxW={500}
                   min={1900}
-                  max={new Date().getYear() + 1900}
+                  max={moment().year()}
                   onChange={(value) => {
                     setYearOfBirth(value);
                   }}
@@ -244,12 +220,11 @@ export default function TopDashboardModal() {
 
                 <FormLabel>Height (in centimeters)</FormLabel>
                 <NumberInput
-                {...register("height")}
+                  {...register("height")}
                   value={height}
                   allowMouseWheel
                   size="md"
                   maxW={100}
-                //   defaultValue={150}
                   min={100}
                   max={300}
                   onChange={(valueAsString, valueAsNumber) =>
@@ -264,10 +239,9 @@ export default function TopDashboardModal() {
                 </NumberInput>
 
                 <Slider
-                {...register("height")}
+                  {...register("height")}
                   flex="1"
                   value={height}
-                //   defaultValue={150}
                   maxW={500}
                   min={100}
                   max={300}
@@ -288,7 +262,6 @@ export default function TopDashboardModal() {
                   value={weight}
                   size="md"
                   maxW={100}
-                //   defaultValue={weight}
                   min={40}
                   max={400}
                   onChange={(valueAsString, valueAsNumber) =>
@@ -305,7 +278,6 @@ export default function TopDashboardModal() {
                   {...register("weight")}
                   flex="1"
                   value={weight}
-                //   defaultValue={weight}
                   maxW={800}
                   min={40}
                   max={400}
