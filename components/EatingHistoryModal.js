@@ -18,12 +18,15 @@ import {
   ModalHeader,
   ModalCloseButton,
   ModalBody,
+  ModalFooter
 } from "@chakra-ui/react";
 import moment from "moment";
 import { execOnce } from "next/dist/shared/lib/utils";
 moment().format();
 
 export default function EatingHistoryModal() {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [mealToUpdate, setMealToUpdate] = useState([])
   const [eatingHistory, setEatingHistory] = useState([
     {
       day: "2000-01-01T04:00:00.000Z",
@@ -50,8 +53,7 @@ export default function EatingHistoryModal() {
         new Date(b.day) - new Date(a.day);
       });
       dateDivide(eatingHistory);
-      //   console.log(subarrayHistory)
-    }, 5000);
+    }, 10000);
   }, []);
 
   //   Basic API call to get Data. Can be passed through props
@@ -63,7 +65,7 @@ export default function EatingHistoryModal() {
     console.log(firstResident);
     if (firstResident !== undefined) {
       setEatingHistory(await firstResident.eating_history.reverse());
-      //   console.log(eatingHistory);
+      console.log(eatingHistory);
     }
   }
 
@@ -100,108 +102,75 @@ export default function EatingHistoryModal() {
     return (
       <Box>
         <VStack>
-          {subarrayHistory.map(
-            (menuDay, index, array) => {
-              //   console.log(menuDay, index, array);
-              console.log(menuDay);
+          {subarrayHistory.map((menuDay, index, array) => {
 
-              if (menuDay.length > 1) {
-                return (
-                  <HStack
-                    bg="tomato"
-                    p={4}
-                    px="2"
-                    border="black"
-                    borderRadius="md"
-                  >
-                    <Heading as="h3" size="md">
-                      {moment(menuDay[0].day).format("dddd MMM Do YYYY")}
-                    </Heading>
-                    {menuDay.map((meal, i, a) => {
-                      if (a.length < 1) {
-                        return;
-                      }
-                      return (
+            console.log(menuDay);
+
+            if (menuDay.length > 1) {
+              return (
+                <HStack
+                  bg="tomato"
+                  p={4}
+                  px="2"
+                  border="black"
+                  borderRadius="md"
+                >
+                  <Heading as="h3" size="md">
+                    {moment(menuDay[0].day).format("dddd MMM Do YYYY")}
+                  </Heading>
+                  {menuDay.map((meal, i, a) => {
+                    if (a.length < 1) {
+                      return;
+                    }
+                    return (
+                      <div>
                         <Box
                           as="Button"
                           key={meal.mealId}
+                          data-id={meal.mealId}
                           bg="white"
                           p={2}
                           mx={2}
                           borderRadius="md"
+                          onClick={(e) => {
+                            console.log(e.target.closest("button"));
+                            
+                            let idOfMealToChange = e.target.closest("button").dataset.id
+
+                            let dayOfMealToChange = 
+                              e.target.closest("button").children[0].children[1]
+                                .innerHTML
+                            ;
+                            let amountOfMealToChange = 
+                              e.target.closest("button").children[1].children[1]
+                                .innerHTML
+                            ;
+
+                            console.log(idOfMealToChange, dayOfMealToChange, amountOfMealToChange)
+                            setMealToUpdate([idOfMealToChange, dayOfMealToChange, amountOfMealToChange])
+                            console.log(mealToUpdate)
+                          }}
                         >
-                          <b>Date: </b>
-                          {moment(meal.day).format("MMM Do, YYYY")}
-                          <br />
-                          <b>Amount Eaten: </b>
-                          {meal.amount_eaten}
-                          <br />
+                          <div className="dateOfMeal">
+                            <b>Date: </b>
+                            <p>{moment(meal.day).format("MMM Do, YYYY")}</p>
+                          </div>
+                          <div className="amountEaten">
+                            <b>Amount Eaten: </b>
+                            <p>{meal.amount_eaten}</p>
+                          </div>
                         </Box>
-                      );
-                    })}
-                  </HStack>
-                );
-              }
+                        
+                      </div>
+                    );
+                  })}
+                </HStack>
+              );
             }
-
-            // if (index > 1) {
-            //   let firstValue = moment(array[index].day).format(
-            //     "YYYY-MM-DD h:mm:ss a"
-            //   );
-            //   let secondValue = moment(array[index - 1].day).format(
-            //     "YYYY-MM-DD h:mm:ss a"
-            //   );
-            //   if (moment(firstValue).isSame(secondValue, `day`))
-            //   return (
-            //     <div key={index}>
-            //       <b>Date: </b>
-            //       {menuDay.day}
-            //       <b>Amount Eaten: </b>
-            //       {menuDay.amount_eaten}
-            //       <b>Meal ID: </b>
-            //       {menuDay.mealId}
-
-            //       <MenuDayArray menuDay={menuDay} />
-
-            //       {/* {menuDay.map((meal, i, a) => {
-            //             return (
-            //             <HStack>
-            //                 {meal.day}
-            //                 <b>Date: </b>
-            //                 {e.day}
-            //                 <b>Amount Eaten: </b>
-            //                 {e.amount_eaten}
-            //                 <b>Meal ID: </b>
-            //                 {e.mealId}
-            //             </HStack>
-            //             );
-            //         })} */}
-            //     </div>
-            //   );
-            // }
-          )}
+          })}
           )
         </VStack>
       </Box>
     );
   }
 }
-
-// function MenuDayArray({ menuDay, ...props }) {
-//   return (
-//     <HStack>
-//       {/* <b>Date: </b>
-//       {menuDay.day}
-//       <b>Amount Eaten: </b>
-//       {menuDay.amount_eaten}
-//       <b>Meal ID: </b>
-//       {menuDay.mealId} */}
-
-//       {/* {menuDay.map((ele, ind, arr) => {
-//             return (
-//                 <div>ele.day</div>
-//             )
-//         })} */}
-//     </HStack>
-//   );
-// }
