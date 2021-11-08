@@ -1,6 +1,19 @@
+import { useEffect, useState } from 'react'
 import database from "utils/api/database";
-import { List, Text, Flex, Spacer, Heading } from "@chakra-ui/react";
-import Link from "next/link";
+import {
+  Text,
+  Flex,
+  Spacer,
+  Heading,
+  Button,
+  VStack,
+  InputGroup,
+  InputLeftElement,
+  Input,
+} from "@chakra-ui/react";
+import { AddIcon, Search2Icon } from "@chakra-ui/icons";
+import NextLink from "next/link";
+import { searchObjects } from "utils"
 
 export const getServerSideProps = async () => {
   const { ResidentModel } = await database();
@@ -13,32 +26,62 @@ export const getServerSideProps = async () => {
   };
 };
 
-export default function ResidentsList({ residents }) {
+/**
+ * @todo
+ * - [ ] Add pagination 
+ */
+export default function ResidentsPage({ residents }) {
+  const [searchQuery, setSeachQuery] = useState("")
+  const [residentsFiltered, setResidentsFiltered] = useState(residents)
+  useEffect(() => {
+    const _residentsFiltered = searchObjects(residents, searchQuery)
+    setResidentsFiltered(_residentsFiltered)
+  }, [searchQuery]) 
+
   return (
-  <Flex direction="column" h="100%">
-    <Heading alignSelf="center">
-      Residents list
-    </Heading>
-    <List h="100%" mt="10%">
-      {residents.map((resident, i) => (
-          <Link key={resident._id} href={`resident/${resident._id}`}>
-            <a>
-              <ResidentItem
-                data={resident}
-                sx={{_hover: {
-                  bg: "gray.200"
-                }}}
-                />
-            </a>
-          </Link>
-      ))}
-    </List>
+    <Flex align="center" direction="column" h="100vh" overflow="auto">
+      <Heading>Residents list</Heading>
+      <Flex mt="7%" w="100%" justify="space-around">
+        <SearchBar onChange={(e) => setSeachQuery(e.target.value)}/>
+        <NextLink href="/resident/create" passHref>
+          <Button borderRadius="xl" as="a" leftIcon={<AddIcon />} colorScheme="green">
+            Add a resident
+          </Button>
+        </NextLink>
+      </Flex>
+      <ResidentList overflow="auto" w="95%" mt="10px" residents={residentsFiltered} />
     </Flex>
   );
 }
 
+function SearchBar(props) {
+  return (
+    <InputGroup w="auto" {...props}>
+      <InputLeftElement
+        pointerEvents="none"
+        children={<Search2Icon color="gray.500" />}
+      />
+      <Input borderRadius="50px" placeholder="Search..." />
+    </InputGroup>
+  );
+}
+
+function ResidentList({ residents, ...props }) {
+  return (
+    <VStack spacing="0" align="stretch" w="100%" h="100%" {...props}>
+      {residents.map((resident, i) => (
+        <NextLink key={resident._id} href={`/resident/${resident._id}`}>
+          <a>
+            <ResidentItem data={resident} _hover={{ bg: "gray.200" }} />
+          </a>
+        </NextLink>
+      ))}
+    </VStack>
+  );
+}
+
 function ResidentItem({ data, ...props }) {
-  const { first_name, last_name, weight, height } = data
+  const { first_name, last_name, weight, height } = data;
   return (
     <Flex
       align="center"

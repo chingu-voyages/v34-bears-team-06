@@ -40,3 +40,40 @@ export function transformEatingHistory(eatingHistory) {
 export function getMealCalories(meal, amount = 1) {
   return (amount * (meal.protein_offered * 4 + meal.carbs_offered * 4 + meal.fat_offered * 9));
 }
+
+/**
+ * Get an array of the objects in `arr` that match the `searchQuery`\
+ * Separates queries by whitespace
+ * @param arr Array of object to match to query to
+ * @param searchQuery Query to match
+ */
+export function searchObjects(arr=[], searchQuery="") {
+  const arrayQuery = convertToRawString(searchQuery).split(" ")
+  return arr.filter(item => doesObjectMatchQuery(item, arrayQuery))
+}
+
+/**
+ * Transform a string this way:
+ * 1. Removes whitespaces
+ * 2. Converts to lowercase
+ * 3. Removes any kind of accent
+ * Info about `normalize` and `replace`: https://stackoverflow.com/a/37511463
+ */
+export function convertToRawString(str="") {
+  return str.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+}
+/**
+ * Returns true if the any props. of `obj` matches any string in `arrQuery`
+ * 
+ * Only works for resident's first_name and last_name
+ * @todo make it to work with any object
+ */
+export function doesObjectMatchQuery(obj, arrQuery) {
+  const rawFirstName = convertToRawString(obj["first_name"])
+  const rawLastName = convertToRawString(obj["last_name"])
+  for (let query of arrQuery) {
+    const regex = new RegExp(query, "gi")
+    if (rawFirstName.search(regex) !== -1 || rawLastName.search(regex) !== -1  ) return true
+  }
+  return false
+}
