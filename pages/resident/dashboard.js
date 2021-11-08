@@ -5,6 +5,7 @@ import MealTimeSidebar from "components/MealTimeSidebar";
 import CalorieGoals from "components/CalorieGoals";
 import MenuWeek from "components/MenuWeek";
 import CaloriesGraph from "components/CaloriesGraph"
+import ResidentButton from "components/ResidentButton"
 import { getResidents, getMenus } from "utils/api"
 import database from "utils/api/database"
 
@@ -55,6 +56,7 @@ export default function Dashboard({ resident, menu }) {
   
   return (
     <div suppressHydrationWarning>
+      <ResidentButton/>
       <TopDashboard resident={resident}/>
       <Flex justify="center" >
         <MealTimeSidebar menuData={menu} />

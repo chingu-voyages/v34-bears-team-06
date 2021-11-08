@@ -5,6 +5,7 @@ import MealTimeSidebar from "components/MealTimeSidebar";
 import CalorieGoals from "components/CalorieGoals";
 import MenuWeek from "components/MenuWeek";
 import CaloriesGraph from "components/CaloriesGraph";
+import ResidentButton from "components/ResidentButton"
 
 export const getServerSideProps = async ({ params }) => {
   const { residentId } = params;
@@ -35,6 +36,7 @@ export default function DetailPage({ resident, menu }) {
 
   return (
     <div suppressHydrationWarning>
+      <ResidentButton/>
       <TopDashboard resident={resident} />
       <Flex justify="center">
         <MealTimeSidebar menuData={menu} />
