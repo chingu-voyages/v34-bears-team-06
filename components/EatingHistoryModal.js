@@ -56,7 +56,7 @@ export default function EatingHistoryModal() {
     }, 10000);
   }, []);
 
-  //   Basic API call to get Data. Can be passed through props
+  //   Basic API call to get Data. Could later be passed through props
   async function getResident() {
     const response = await fetch("/api/resident?first_name=John");
     console.log(response);
@@ -64,7 +64,7 @@ export default function EatingHistoryModal() {
     const firstResident = data.resident[0];
     console.log(firstResident);
     if (firstResident !== undefined) {
-      setEatingHistory(await firstResident.eating_history.reverse());
+      setEatingHistory(firstResident.eating_history.reverse());
       console.log(eatingHistory);
     }
   }
@@ -90,7 +90,7 @@ export default function EatingHistoryModal() {
       }
     }
 
-    setEatingHistory(newArray);
+    // setEatingHistory(newArray);
     setSubarrayHistory(newArray);
     console.log(newArray);
     // return array
