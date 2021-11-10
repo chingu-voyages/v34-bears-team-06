@@ -21,12 +21,15 @@ import {
 } from "@chakra-ui/react";
 import TimeKeeper from "components/TimeKeeper";
 import EatingHistoryModal from "./EatingHistoryModal";
+import EatingHistoryForm from "./EatingHistoryForm"
 import moment from "moment";
 // The following line comes from the momentjs.com/docs
 moment().format();
 
-export default function MealTimeSidebar({menuData}) {
+export default function MealTimeSidebar({resident, menuData}) {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const addMealModal = useDisclosure();
+
   const [daysDiff, setDaysDiff] = useState(0);
   const [dayOfMenu, setDayOfMenu] = useState(0);
   const [mealOfDay, setMealOfDay] = useState(0);
@@ -187,6 +190,9 @@ export default function MealTimeSidebar({menuData}) {
               <b>Add or Update Eating Information</b>
             </Heading>
           </Box>
+            <Button leftIcon="🥗" onClick={addMealModal.onOpen} colorScheme={"red"}>
+              Register a meal
+            </Button>
 
           {/* How to put a modal within a modal: https://stackoverflow.com/questions/65988633/chakra-ui-using-multiple-models-in-a-single-component */}
           <Modal isOpen={isOpen} onClose={onClose} size="full">
@@ -202,6 +208,18 @@ export default function MealTimeSidebar({menuData}) {
               </ModalBody>
             </ModalContent>
           </Modal>
+          
+          <Modal isOpen={addMealModal.isOpen} onClose={addMealModal.onClose}>
+            <ModalOverlay />
+            <ModalContent>
+              <ModalHeader textAlign="center">🥗 Register a meal</ModalHeader>
+              <ModalCloseButton />
+              <ModalBody display="flex" justifyContent="center">
+                <EatingHistoryForm residentId={resident._id} upcomingMealId={menuData.days[Math.ceil(dayOfMenu)].meals[mealOfDay]._id}/>
+              </ModalBody>
+            </ModalContent>
+          </Modal>
+
         </VStack>
       </Box>
     </div>

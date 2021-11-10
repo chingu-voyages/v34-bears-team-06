@@ -37,7 +37,7 @@ export default function DetailPage({ resident, menu }) {
     <div suppressHydrationWarning>
       <TopDashboard resident={resident} />
       <Flex justify="center">
-        <MealTimeSidebar menuData={menu} />
+        <MealTimeSidebar resident={resident} menuData={menu} />
         <Flex direction="column">
           <CaloriesGraph eatingHistory={resident.eating_history} />
           <CalorieGoals userDB={resident} />
