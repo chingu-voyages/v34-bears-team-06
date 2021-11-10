@@ -36,7 +36,20 @@ handler.put(async (req, res) => {
   const { ResidentModel } = await database()
   const { rid } = req.query
   const residentData = req.body
-  const resident = await ResidentModel.findByIdAndUpdate(rid, residentData, {new: true})
+
+  let eatingHistory = residentData.eating_history
+  if (eatingHistory) {
+    // Simply converts it to an array if it isn't
+    eatingHistory = eatingHistory instanceof Array ? eatingHistory : [eatingHistory]
+    delete residentData.eating_history
+  }
+
+  const update = {
+    $set: residentData,
+    $push: { eating_history: {$each: eatingHistory || [] } }
+  }
+
+  const resident = await ResidentModel.findByIdAndUpdate(rid, update, {new: true})
   res.json({ msg: "Resident updated", resident })
 });
 
