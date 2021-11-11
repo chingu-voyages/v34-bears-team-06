@@ -50,3 +50,19 @@ export async function getMenus(params = {}) {
     return response.data.menus;
   }
 }
+
+export async function updateMealInEatingHistory(residentId, historyId, update, params = {}) {
+  let response = {};
+  update = {...update, historyId}
+  try {
+    response = await axios.put(`${RESIDENT_URI}${residentId}/eatingHistory`, update, {
+      params,
+    });
+    console.log("[API][updateMealInEatingHistory] Success");
+  } catch (err) {
+    console.log("[API][updateMealInEatingHistory] error:", err);
+    response.error = err;
+  } finally {
+    return response.data.resident;
+  }
+}

@@ -3,12 +3,7 @@ import {
   useDisclosure,
   Box,
   Button,
-  Image,
-  Flex,
   Spacer,
-  Badge,
-  Stack,
-  HStack,
   VStack,
   StackDivider,
   Heading,
@@ -204,7 +199,7 @@ export default function MealTimeSidebar({resident, menuData}) {
                 This is a full-sized modal. This is where we will place the
                 buttons to add/edit eating information. You can click the 'X'
                 button on the top right to leave the page.
-                <EatingHistoryModal/>
+                <EatingHistoryModal resident={resident}/>
               </ModalBody>
             </ModalContent>
           </Modal>

@@ -1,37 +1,13 @@
 import { useState, useEffect } from "react";
 import {
-  useDisclosure,
   Box,
-  Button,
-  Image,
-  Flex,
-  Spacer,
-  Badge,
-  Stack,
-  HStack,
-  VStack,
-  StackDivider,
-  Heading,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalCloseButton,
-  ModalBody,
-  ModalFooter,
-  NumberInput,
-  NumberInputField,
-  NumberInputStepper,
-  NumberIncrementStepper,
-  NumberDecrementStepper,
 } from "@chakra-ui/react";
 import moment from "moment";
-import { execOnce } from "next/dist/shared/lib/utils";
 import UpdateIndividualMeal from "components/UpdateIndividualMeal";
 
 moment().format();
 
-export default function IndivMealDisplay({ historyId, mealId, day, amount, mealToUpdate, setMealToUpdate }) {
+export default function IndivMealDisplay({ residentId, historyId, mealId, day, amount, mealToUpdate, setMealToUpdate }) {
   const [active, setActive] = useState(false);
   const [clickedOnce, setClickedOnce] = useState(false)
   // setMealToUpdate([mealId, day, amount])
@@ -64,7 +40,7 @@ export default function IndivMealDisplay({ historyId, mealId, day, amount, mealT
         <div>
           {
           active === true && 
-          <UpdateIndividualMeal historyId={historyId} amountEaten={amount} mealId={mealId}/>
+          <UpdateIndividualMeal residentId={residentId} historyId={historyId} amountEaten={amount} mealId={mealId}/>
           } 
         </div>
       </Box>

@@ -1,25 +1,7 @@
 import { useState, useEffect } from "react";
 import {
-  useDisclosure,
-  Box,
   Button,
   Center,
-  Image,
-  Flex,
-  Spacer,
-  Badge,
-  Stack,
-  HStack,
-  VStack,
-  StackDivider,
-  Heading,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalCloseButton,
-  ModalBody,
-  ModalFooter,
   NumberInput,
   NumberInputField,
   NumberInputStepper,
@@ -27,32 +9,34 @@ import {
   NumberDecrementStepper,
 } from "@chakra-ui/react";
 import moment from "moment";
-import { execOnce } from "next/dist/shared/lib/utils";
-import { useForm } from "react-hook-form";
+import { updateMealInEatingHistory } from "utils/api"
 moment().format();
 
-export default function UpdateIndividualMeal({ historyId, amountEaten, mealId }) {
+export default function UpdateIndividualMeal({ residentId, historyId, amountEaten, mealId }) {
 
-  const [numberEaten, setNumberEaten] = useState(amountEaten)
-  const [updateData, setUpdateData] = useState({
-    amount_eaten: amountEaten,
-    array_id: historyId
-  })
+  const [amount_eaten, setAmountEaten] = useState(amountEaten)
+  // const [updateData, setUpdateData] = useState({
+  //   amount_eaten: amountEaten,
+  //   array_id: historyId
+  // })
 
-  function handleSubmit() {
-    setUpdateData({
-      amount_eaten: parseFloat(numberEaten),
-      array_id: historyId
-    })
-    console.log(updateData)
+  async function handleSubmit() {
+    // setUpdateData({
+    //   amount_eaten: parseFloat(numberEaten),
+    //   array_id: historyId
+    // })
+    console.log("[UpdateIndividualMeal] amount_eaten: ", amount_eaten)
+    await updateMealInEatingHistory(residentId, historyId, {amount_eaten})
+
+    // console.log(updateData)
   }
 
-  useEffect(() => {
-    setUpdateData({
-      amount_eaten: parseFloat(numberEaten),
-      array_id: historyId
-    })
-  }, [numberEaten])
+  // useEffect(() => {
+  //   setUpdateData({
+  //     amount_eaten: parseFloat(numberEaten),
+  //     array_id: historyId
+  //   })
+  // }, [numberEaten])
 
   return (
     <>
@@ -61,13 +45,13 @@ export default function UpdateIndividualMeal({ historyId, amountEaten, mealId })
         // {...register("amountEaten")}
         name="amountEaten"
           step={0.05}
-          value={numberEaten}
+          value={amount_eaten}
           size="sm"
           maxW={20}
           min={0}
           max={1}
           onChange={(e) => {
-            setNumberEaten(e)
+            setAmountEaten(e)
           }}
         >
           <NumberInputField />
