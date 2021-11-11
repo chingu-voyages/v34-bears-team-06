@@ -7,8 +7,15 @@ import {
 } from "@chakra-ui/react";
 
 export default function MenuWeek({ menuData, ...props }) {
-  const today = menuData.days[0];
-  const tomorrow = menuData.days[1];
+  const menuDateDiff = Date.now() - Date.parse(menuData.init_date);
+  const menuDateDiffInDays = Math.floor(menuDateDiff / 1000 / 60 / 60 / 24);
+  const dayOfMenu = (menuDateDiffInDays % menuData.days.length) + 1
+  const nextDayOfMenu = dayOfMenu + 1 >= menuData.days.length ? 1 : dayOfMenu + 1
+
+  const today = menuData.days.find(day => day.day_number == dayOfMenu);
+  const tomorrow = menuData.days.find(day => day.day_number == nextDayOfMenu);
+  // const today = menuData.days[0]
+  // const tomorrow = menuData.days[1]
 
   return (
     <Box
@@ -20,6 +27,7 @@ export default function MenuWeek({ menuData, ...props }) {
       boxShadow="xl"
       borderRadius="md"
       overflow="hidden"
+      {...props}
     >
       <b>View This Week's Menu</b>
       
