@@ -4,8 +4,9 @@ import TopDashboard from "components/TopDashboard";
 import MealTimeSidebar from "components/MealTimeSidebar";
 import CalorieGoals from "components/CalorieGoals";
 import MenuWeek from "components/MenuWeek";
+import DataInsights from "components/DataInsights"
 import CaloriesGraph from "components/CaloriesGraph";
-import ResidentButton from "components/ResidentButton"
+import ResidentButton from "components/ResidentButton";
 
 export const getServerSideProps = async ({ params }) => {
   const { residentId } = params;
@@ -36,13 +37,14 @@ export default function DetailPage({ resident, menu }) {
 
   return (
     <div suppressHydrationWarning>
-      <ResidentButton/>
+      <ResidentButton />
       <TopDashboard resident={resident} />
       <Flex justify="center">
         <MealTimeSidebar resident={resident} menuData={menu} />
         <Flex direction="column">
-          <CaloriesGraph eatingHistory={resident.eating_history} />
           <CalorieGoals userDB={resident} />
+          <CaloriesGraph eatingHistory={resident.eating_history} />
+          <DataInsights eatingHistory={resident.eating_history} userDB={resident} />
           <MenuWeek menuData={menu} />
         </Flex>
       </Flex>
