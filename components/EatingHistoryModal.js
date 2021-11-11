@@ -112,11 +112,12 @@ export default function EatingHistoryModal({ resident }) {
                   </Heading>
                   {menuDay.map((meal, i, a) => {
                     if (a.length < 1) {
-                      return <div></div>;
+                      return <div key={i}></div>;
                     }
                     return (
                       <div>
                         <IndivMealDisplay
+                          key={meal._id}
                           residentId={resident._id}
                           historyId={meal._id}
                           mealId={meal.mealId}

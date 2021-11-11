@@ -40,7 +40,7 @@ export default function MenuWeek({ menuData, ...props }) {
           {today.meals.map((meal, i) => {
             const color = getCharkaUIColor("orange", i);
 
-            return <Meal key={meal.role} bg={color} {...meal} />;
+            return <Meal key={meal._id} bg={color} {...meal} />;
           })}
         </HStack>
         <HStack h="120px">
@@ -48,7 +48,7 @@ export default function MenuWeek({ menuData, ...props }) {
           {tomorrow.meals.map((meal, i) => {
             const color = getCharkaUIColor("orange", i, 4);
             
-            return <Meal key={meal.role} bg={color} {...meal} />;
+            return <Meal key={meal._id} bg={color} {...meal} />;
           })}
         </HStack>
       </VStack>

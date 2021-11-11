@@ -31,13 +31,15 @@ export default function MealTimeSidebar({resident, menuData}) {
   const [snackOfDay, setSnackOfDay] = useState(0);
   const menuInit = menuData.init_date;
   const menuLength = menuData.days.length;
+  const currentDay = menuData.days[Math.floor(dayOfMenu)]  
 
   // Refreshes the component about menu info every 10 seconds (customizable)
   useEffect(() => {
     refreshDates();
-    setInterval(() => {
+    const intervalId = setInterval(() => {
       refreshDates();
     }, 10000);
+    return () => clearInterval(intervalId)
   }, []);
 
   function refreshDates() {
@@ -50,23 +52,20 @@ export default function MealTimeSidebar({resident, menuData}) {
 
   useEffect(() => {
     // Sets dayOfMenu to a number in [0, menuLength)
+    // This calculations gives a problem. Check daysDiff and menuLength
     setDayOfMenu(daysDiff % menuLength);
-    // console.log(
-    //   /*menuDateDiff, */ daysDiff,
-    //   menuLength,
-    //   dayOfMenu,
-    //   Math.floor(dayOfMenu),
-    //   Math.ceil(dayOfMenu)
-    // );
   }, [daysDiff]);
 
   useEffect(() => {
     //   Set up to find the first meal and snack from (in this example) 1 hours before to 3 hours after Date.now()
     // Refreshes every 5 minutes
     mealDisplaySelect(1, 12);
-    setInterval(() => {
+    const intervalId = setInterval(() => {
       mealDisplaySelect(1, 12);
     }, 300000);
+    return () => {
+      clearInterval(intervalId)
+    }
   }, []);
 
   function mealDisplaySelect(hoursBefore, hoursAfter) {
@@ -77,7 +76,7 @@ export default function MealTimeSidebar({resident, menuData}) {
     let hoursAfterNow = moment(now).add(hoursAfter, "hours");
 
     // isMatch is true if time of meal is found between hoursBeforeNow && hoursAfterNow, sets mealOfDay
-    menuData.days[dayOfMenu].meals.forEach((meal, i) => {
+    currentDay.meals.forEach((meal, i) => {
       let mealTime = moment(meal.meal_time, "H:mm:ss");
       let isMatch =
         moment(mealTime, "H:mm:ss").isSameOrAfter(
@@ -91,13 +90,13 @@ export default function MealTimeSidebar({resident, menuData}) {
         setMealOfDay(i);
       }
 
-      if (i === menuData.days[dayOfMenu].meals.length && !isMatch) {
+      if (i === currentDay.meals.length && !isMatch) {
         setDayOfMenu(dayOfMenu + 1);
       }
     });
 
     // isMatch is true if time of snack is found between hoursBeforeNow && hoursAfterNow, sets snackOfDay
-    menuData.days[dayOfMenu].snacks.forEach((snack, i) => {
+    currentDay.snacks.forEach((snack, i) => {
       let snackTime = moment(snack.meal_time, "H:mm:ss");
       let isMatch =
         moment(snackTime, "H:mm:ss").isSameOrAfter(
@@ -145,14 +144,14 @@ export default function MealTimeSidebar({resident, menuData}) {
             <b>
               Upcoming Meal -{" "}
               {
-                menuData.days[Math.ceil(dayOfMenu)].meals[`${mealOfDay}`]
+                currentDay.meals[`${mealOfDay}`]
                   .meal_role
               }
               :{" "}
             </b>
             <br />
             {
-              menuData.days[Math.ceil(dayOfMenu)].meals[`${mealOfDay}`]
+              currentDay.meals[`${mealOfDay}`]
                 .meal_title
             }
           </Box>
@@ -160,13 +159,13 @@ export default function MealTimeSidebar({resident, menuData}) {
             <b>
               Upcoming Snack -{" "}
               {
-                menuData.days[Math.ceil(dayOfMenu)].snacks[`${snackOfDay}`]
+                currentDay.snacks[`${snackOfDay}`]
                   .meal_role
               }
               :{" "}
             </b>
             {
-              menuData.days[Math.ceil(dayOfMenu)].snacks[`${snackOfDay}`]
+              currentDay.snacks[`${snackOfDay}`]
                 .meal_title
             }
           </Box>
@@ -210,7 +209,7 @@ export default function MealTimeSidebar({resident, menuData}) {
               <ModalHeader textAlign="center">🥗 Register a meal</ModalHeader>
               <ModalCloseButton />
               <ModalBody display="flex" justifyContent="center">
-                <EatingHistoryForm residentId={resident._id} upcomingMealId={menuData.days[Math.ceil(dayOfMenu)].meals[mealOfDay]._id}/>
+                <EatingHistoryForm residentId={resident._id} upcomingMealId={currentDay.meals[mealOfDay]._id}/>
               </ModalBody>
             </ModalContent>
           </Modal>
