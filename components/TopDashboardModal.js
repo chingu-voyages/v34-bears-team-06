@@ -77,6 +77,7 @@ export default function TopDashboardModal({ resident }) {
     }
     // API call
     const res = await updateResident(resident._id, residentData)
+    // Reload page, router.push or similar
     // use res.error to know if there was an error and display useful information to the client
   };
 
