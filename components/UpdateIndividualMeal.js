@@ -31,15 +31,28 @@ import { execOnce } from "next/dist/shared/lib/utils";
 import { useForm } from "react-hook-form";
 moment().format();
 
-export default function UpdateIndividualMeal({ amountEaten, mealId }) {
+export default function UpdateIndividualMeal({ historyId, amountEaten, mealId }) {
 
   const [numberEaten, setNumberEaten] = useState(amountEaten)
+  const [updateData, setUpdateData] = useState({
+    amount_eaten: amountEaten,
+    array_id: historyId
+  })
 
-  const { register, handleSubmit } = useForm({
-    defaultValues: {
-      amountEaten
-    },
-  });
+  function handleSubmit() {
+    setUpdateData({
+      amount_eaten: parseFloat(numberEaten),
+      array_id: historyId
+    })
+    console.log(updateData)
+  }
+
+  useEffect(() => {
+    setUpdateData({
+      amount_eaten: parseFloat(numberEaten),
+      array_id: historyId
+    })
+  }, [numberEaten])
 
   return (
     <>
@@ -64,7 +77,7 @@ export default function UpdateIndividualMeal({ amountEaten, mealId }) {
           </NumberInputStepper>
         </NumberInput>
       </Center>
-      <Button size="sm" colorScheme="green">
+      <Button size="sm" colorScheme="green" onClick={handleSubmit}>
         Update
       </Button>
     </>

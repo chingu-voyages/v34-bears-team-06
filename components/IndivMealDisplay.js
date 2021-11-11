@@ -64,7 +64,7 @@ export default function IndivMealDisplay({ historyId, mealId, day, amount, mealT
         <div>
           {
           active === true && 
-          <UpdateIndividualMeal amountEaten={amount} mealId={mealId}/>
+          <UpdateIndividualMeal historyId={historyId} amountEaten={amount} mealId={mealId}/>
           } 
         </div>
       </Box>
