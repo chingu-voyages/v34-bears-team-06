@@ -18,15 +18,25 @@ import {
   ModalHeader,
   ModalCloseButton,
   ModalBody,
-  ModalFooter
+  ModalFooter,
 } from "@chakra-ui/react";
 import moment from "moment";
+import UpdateIndividualMeal from "components/UpdateIndividualMeal";
+import IndivMealDisplay from "components/IndivMealDisplay";
 import { execOnce } from "next/dist/shared/lib/utils";
 moment().format();
 
 export default function EatingHistoryModal() {
+  // For the first layer of modal
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [mealToUpdate, setMealToUpdate] = useState([])
+  // For the inner/nested modal
+  const {
+    isOpen: isInnerOpen,
+    onOpen: onInnerOpen,
+    onClose: onInnerClose,
+  } = useDisclosure();
+
+  const [mealToUpdate, setMealToUpdate] = useState([]);
   const [eatingHistory, setEatingHistory] = useState([
     {
       day: "2000-01-01T04:00:00.000Z",
@@ -45,27 +55,29 @@ export default function EatingHistoryModal() {
     },
   ]);
 
+  const [dataLoaded, setDataLoaded] = useState(false);
+
   useEffect(() => {
-    getResident();
-    setTimeout(() => {
-      getResident();
-      eatingHistory.sort(function (a, b) {
-        new Date(b.day) - new Date(a.day);
+    if (!dataLoaded) {
+      console.log(dataLoaded);
+      getResident().then(function () {
+        eatingHistory.sort(function (a, b) {
+          new Date(b.day) - new Date(a.day);
+        });
+        dateDivide(eatingHistory);
+        setDataLoaded(true);
       });
-      dateDivide(eatingHistory);
-    }, 10000);
-  }, []);
+    }
+  }, [eatingHistory]);
 
   //   Basic API call to get Data. Could later be passed through props
   async function getResident() {
     const response = await fetch("/api/resident?first_name=John");
-    console.log(response);
     const data = await response.json();
     const firstResident = data.resident[0];
-    console.log(firstResident);
     if (firstResident !== undefined) {
       setEatingHistory(firstResident.eating_history.reverse());
-      console.log(eatingHistory);
+      // console.log(eatingHistory);
     }
   }
 
@@ -83,17 +95,13 @@ export default function EatingHistoryModal() {
         continue;
       } else {
         let subArray = array.slice(j - 1, i);
-        console.log(subArray);
         newArray.push(subArray);
         j = i + 1;
         continue;
       }
     }
-
-    // setEatingHistory(newArray);
     setSubarrayHistory(newArray);
     console.log(newArray);
-    // return array
   }
 
   if (subarrayHistory.length < 1) {
@@ -103,13 +111,11 @@ export default function EatingHistoryModal() {
       <Box>
         <VStack>
           {subarrayHistory.map((menuDay, index, array) => {
-
-            console.log(menuDay);
-
             if (menuDay.length > 1) {
               return (
                 <HStack
                   bg="tomato"
+                  key={menuDay[0].day}
                   p={4}
                   px="2"
                   border="black"
@@ -120,47 +126,18 @@ export default function EatingHistoryModal() {
                   </Heading>
                   {menuDay.map((meal, i, a) => {
                     if (a.length < 1) {
-                      return;
+                      return <div></div>;
                     }
                     return (
                       <div>
-                        <Box
-                          as="Button"
-                          key={meal.mealId}
-                          data-id={meal.mealId}
-                          bg="white"
-                          p={2}
-                          mx={2}
-                          borderRadius="md"
-                          onClick={(e) => {
-                            console.log(e.target.closest("button"));
-                            
-                            let idOfMealToChange = e.target.closest("button").dataset.id
-
-                            let dayOfMealToChange = 
-                              e.target.closest("button").children[0].children[1]
-                                .innerHTML
-                            ;
-                            let amountOfMealToChange = 
-                              e.target.closest("button").children[1].children[1]
-                                .innerHTML
-                            ;
-
-                            console.log(idOfMealToChange, dayOfMealToChange, amountOfMealToChange)
-                            setMealToUpdate([idOfMealToChange, dayOfMealToChange, amountOfMealToChange])
-                            console.log(mealToUpdate)
-                          }}
-                        >
-                          <div className="dateOfMeal">
-                            <b>Date: </b>
-                            <p>{moment(meal.day).format("MMM Do, YYYY")}</p>
-                          </div>
-                          <div className="amountEaten">
-                            <b>Amount Eaten: </b>
-                            <p>{meal.amount_eaten}</p>
-                          </div>
-                        </Box>
-                        
+                        <IndivMealDisplay
+                          historyId={meal._id}
+                          mealId={meal.mealId}
+                          day={meal.day}
+                          amount={meal.amount_eaten}
+                          setMealToUpdate={setMealToUpdate}
+                          mealToUpdate={mealToUpdate}
+                        />
                       </div>
                     );
                   })}
