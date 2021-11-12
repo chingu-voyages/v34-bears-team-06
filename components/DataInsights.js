@@ -20,7 +20,6 @@ export default function DataInsights({ eatingHistory, resident }) {
 
     return (
         <div>
-            Hi
         </div>
     )
 }

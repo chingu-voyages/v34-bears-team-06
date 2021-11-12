@@ -133,11 +133,10 @@ export default function MealTimeSidebar({resident, menuData}) {
         >
           <Spacer />
           <b>
-            Day #{Math.ceil(dayOfMenu)}/{menuLength} of menu (or exactly{" "}
-            {dayOfMenu} days into menu)
+            Day #{Math.ceil(dayOfMenu)}/{menuLength} of menu
           </b>
           <b>
-            {daysDiff} Days between today's date and menu initialization date
+            {Math.ceil(daysDiff)} Days between today's date and menu initialization date
           </b>
 
           <Box h="auto" p="10px" bg="yellow.200">
@@ -169,9 +168,6 @@ export default function MealTimeSidebar({resident, menuData}) {
                 .meal_title
             }
           </Box>
-          <Heading as="h3" size="md">
-            Add Eating Info ⬇️⬇️
-          </Heading>
           <Box
             as="button"
             h="40px"
