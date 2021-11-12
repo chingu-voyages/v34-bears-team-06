@@ -15,7 +15,7 @@ export const getServerSideProps = async ({ params }) => {
   const resident = await ResidentModel.findById(residentId).populate(
     "eating_history.mealId"
   );
-  const menu = await MenuModel.findOne().populate("days.meals days.snacks");
+  const menu = await MenuModel.findOne({_id: "618e904b2596cd9cd417707f"}).populate("days.meals days.snacks");
 
   return {
     props: {
