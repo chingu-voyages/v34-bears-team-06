@@ -1,10 +1,12 @@
 import mongoose, { connection } from "mongoose";
-import { Resident, Test } from "models";
+import { Resident, Test, Menu, Meal } from "models";
 
 function extendDb(db) {
   const models = {
     ResidentModel: Resident,
     TestModel: Test,
+    MenuModel: Menu,
+    MealModel: Meal,
   };
   return { db, ...models };
 }
@@ -21,8 +23,6 @@ export default async function database() {
     {
       useNewUrlParser: true,
       useUnifiedTopology: true,
-      // useCreateIndex: true,
-      // useFindAndModify: false,
     }
   );
   console.log("Database connected");

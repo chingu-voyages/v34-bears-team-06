@@ -1,0 +1,42 @@
+{
+  "easy_id": "FW2122",
+  "menu_title": "Fall-Winter 2021-2022",
+  "init_date": "October 1 2021 12:00:00",
+  "days": [
+    {
+      "day_number": 1,
+      "meals": ["D1M1B", "D1M2L", "D1M3S"],
+      "snacks": ["D1S1A", "D1S2P", "D1S3H"]
+    },
+    {
+      "day_number": 2,
+      "meals": ["D2M1B", "D2M2L", "D2M3S"],
+      "snacks": ["D2S1A", "D2S2P", "D2S3H"]
+    },
+    {
+      "day_number": 3,
+      "meals": ["D3M1B", "D3M2L", "D3M3S"],
+      "snacks": ["D3S1A", "D3S2P", "D3S3H"]
+    },
+    {
+      "day_number": 4,
+      "meals": ["D4M1B", "D4M2L", "D4M2L"],
+      "snacks": ["D4S1A", "D4S2P", "D4S3H"]
+    },
+    {
+      "day_number": 5,
+      "meals": ["D5M1B", "D5M2L", "D5M3S"],
+      "snacks": ["D5S1A", "D5S2P", "D5S3H"]
+    },
+    {
+      "day_number": 6,
+      "meals": ["D6M1B", "D6M2L", "D6M3S"],
+      "snacks": ["D6S1A", "D6S2P", "D6S3H"]
+    },
+    {
+      "day_number": 7,
+      "meals": ["D7M1B", "D7M2L", "D7M3S"],
+      "snacks": ["D7S1A", "D7S2P", "D7S3H"]
+    }
+  ]
+}
