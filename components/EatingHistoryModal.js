@@ -21,23 +21,9 @@ export default function EatingHistoryModal({ resident }) {
   } = useDisclosure();
 
   const [mealToUpdate, setMealToUpdate] = useState([]);
-  const [eatingHistory, setEatingHistory] = useState(resident.eating_history/* [
-    {
-      day: "2000-01-01T04:00:00.000Z",
-      mealId: "6181e9b503f69ac8f8f550c0",
-      amount_eaten: 0.01,
-      _id: "618213c41837ae86c435ba3f",
-    },
-  ] */);
+  const [eatingHistory, setEatingHistory] = useState(resident.eating_history);
 
-  const [subarrayHistory, setSubarrayHistory] = useState(resident.eating_history/* [
-    {
-      day: "2000-01-01T04:00:00.000Z",
-      mealId: "6181e9b503f69ac8f8f550c0",
-      amount_eaten: 0.01,
-      _id: "618213c41837ae86c435ba3f",
-    },
-  ] */);
+  const [subarrayHistory, setSubarrayHistory] = useState(resident.eating_history);
 
   const [dataLoaded, setDataLoaded] = useState(false);
 
@@ -47,25 +33,10 @@ export default function EatingHistoryModal({ resident }) {
       eatingHistory.sort(function (a, b) {
         new Date(b.day) - new Date(a.day);
       });
-      // getResident().then(function () {
-      //   eatingHistory.sort(function (a, b) {
-      //     new Date(b.day) - new Date(a.day);
-      //   });
         dateDivide(eatingHistory);
         setDataLoaded(true);
       }
   }, [eatingHistory]);
-
-  //   Basic API call to get Data. Could later be passed through props
-  // async function getResident() {
-  //   const response = await fetch("/api/resident?first_name=John");
-  //   const data = await response.json();
-  //   const firstResident = data.resident[0];
-  //   if (firstResident !== undefined) {
-  //     setEatingHistory(firstResident.eating_history.reverse());
-  //     // console.log(eatingHistory);
-  //   }
-  // }
 
   //   Divides the array into subarrays [[Dec 1s], [Dec 2s], [Dec 3s]]
   async function dateDivide(array) {

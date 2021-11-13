@@ -10,14 +10,12 @@ moment().format();
 export default function IndivMealDisplay({ residentId, historyId, mealId, day, amount, mealToUpdate, setMealToUpdate }) {
   const [active, setActive] = useState(false);
   const [clickedOnce, setClickedOnce] = useState(false)
-  // setMealToUpdate([mealId, day, amount])
   return (
     <>
       <Box
         key={mealId}
         data-id={historyId}
         data-meal-id={mealId}
-        // name={mealId}
         bg="white"
         p={2}
         mx={2}
