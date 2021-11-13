@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import {
   useDisclosure,
   Box,
@@ -18,20 +18,28 @@ import TimeKeeper from "components/TimeKeeper";
 import EatingHistoryModal from "./EatingHistoryModal";
 import EatingHistoryForm from "./EatingHistoryForm"
 import moment from "moment";
+import { getDayOfMenu } from "utils"
+
 // The following line comes from the momentjs.com/docs
 moment().format();
 
 export default function MealTimeSidebar({resident, menuData}) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const addMealModal = useDisclosure();
-
+  
   const [daysDiff, setDaysDiff] = useState(0);
-  const [dayOfMenu, setDayOfMenu] = useState(0);
+  // const [dayOfMenu, setDayOfMenu] = useState(0);
   const [mealOfDay, setMealOfDay] = useState(0);
   const [snackOfDay, setSnackOfDay] = useState(0);
-  const menuInit = menuData.init_date;
-  const menuLength = menuData.days.length;
-  const currentDay = menuData.days[Math.floor(dayOfMenu)]  
+  
+  
+  const {dayOfMenu, currentDay, menuInit, menuLength} = useMemo(() => {
+    const menuInit = menuData.init_date;
+    const menuLength = menuData.days.length;
+    const dayOfMenu = getDayOfMenu(menuData)
+    const currentDay = menuData.days.find(day => day.day_number == dayOfMenu)  
+    return {dayOfMenu, currentDay, menuInit, menuLength}
+  }, [menuData])
 
   // Refreshes the component about menu info every 10 seconds (customizable)
   useEffect(() => {
@@ -45,16 +53,15 @@ export default function MealTimeSidebar({resident, menuData}) {
   function refreshDates() {
     // menuDateDiff: Days between today and menu initialization date
     const menuDateDiff = Date.now() - Date.parse(menuInit);
-    // setMenuDateDiff(menuDateDiff)
     const menuDateDiffInDays = menuDateDiff / 1000 / 60 / 60 / 24; // converts ms to days
     setDaysDiff(menuDateDiffInDays);
   }
 
-  useEffect(() => {
+  /* useEffect(() => {
     // Sets dayOfMenu to a number in [0, menuLength)
     // This calculations gives a problem. Check daysDiff and menuLength
     setDayOfMenu(daysDiff % menuLength);
-  }, [daysDiff]);
+  }, [daysDiff]); */
 
   useEffect(() => {
     //   Set up to find the first meal and snack from (in this example) 1 hours before to 3 hours after Date.now()
@@ -90,9 +97,9 @@ export default function MealTimeSidebar({resident, menuData}) {
         setMealOfDay(i);
       }
 
-      if (i === currentDay.meals.length && !isMatch) {
-        setDayOfMenu(dayOfMenu + 1);
-      }
+      // if (i === currentDay.meals.length && !isMatch) {
+      //   setDayOfMenu(dayOfMenu + 1);
+      // }
     });
 
     // isMatch is true if time of snack is found between hoursBeforeNow && hoursAfterNow, sets snackOfDay
@@ -133,7 +140,7 @@ export default function MealTimeSidebar({resident, menuData}) {
         >
           <Spacer />
           <b>
-            Day #{Math.ceil(dayOfMenu)}/{menuLength} of menu
+            Day #{dayOfMenu}/{menuLength} of menu
           </b>
           <b>
             {Math.ceil(daysDiff)} Days between today's date and menu initialization date

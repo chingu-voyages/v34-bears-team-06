@@ -77,3 +77,9 @@ export function doesObjectMatchQuery(obj, arrQuery) {
   }
   return false
 }
+
+export function getDayOfMenu(menu) {
+  const menuDateDiff = Date.now() - Date.parse(menu.init_date);
+  const menuDateDiffInDays = Math.floor(menuDateDiff / 1000 / 60 / 60 / 24);
+  return (menuDateDiffInDays % menu.days.length) + 1
+}
