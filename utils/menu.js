@@ -32,15 +32,15 @@ export function getNextNDayNumberOfMenu(menu, n = 1) {
 }
 
 /**
- * Performs a very basic equality check. Only looks if meal_titles are the same.
+ * Equilty check done with its _id properties
  */
 export function areSameMeal(meal1, meal2) {
-  return meal1.meal_title == meal2.meal_title;
+  return meal1._id == meal2._id;
 }
 
 /**
- * Returns next meal and snack\
- * Will fail if there are no meals or snacks left from today
+ * Returns an object with the next meal and snack\
+ * Will return undefined if there are no meals or snacks left from today
  */
 export function getNextMealLazy(menu) {
   const todaysMenu = getTodaysMenu(menu);
@@ -57,12 +57,12 @@ export function getNextMeal(menu) {
   const tomorrowsMenu = getMenuByDayNumber(menu, getNextNDayNumberOfMenu(menu));
 
   let nextMeal = getFirstMealInInterval(todaysMenu);
-  if (areSameMeal(nextMeal, todaysMenu.meals[0])) {
+  if (!nextMeal) {
     nextMeal = tomorrowsMenu.meals[0];
   }
 
   let nextSnack = getFirstMealInInterval(todaysMenu, "snacks");
-  if (areSameMeal(nextMeal, todaysMenu.snacks[0])) {
+  if (!nextSnack) {
     nextSnack = tomorrowsMenu.snacks[0];
   }
 
@@ -71,7 +71,7 @@ export function getNextMeal(menu) {
 
 /**
  * Returns the first meal or snack in the interval of time: `[-hoursBefore, right now, +hoursAfter]`\
- * By default will return the meals, in `[-1, right now, +12]`
+ * By default will return the **meals**, in `[0, right now, +10]`
  * @param menuDay
  * @param {"meals" | "snacks"} type Indicate if will look for "meal" or "snack"
  * @param {Number} hoursBefore
@@ -80,19 +80,20 @@ export function getNextMeal(menu) {
  * const meal1 = {meal_time: "12:30", ...mealData}
  * const meal2 = {meal_time: "15:30", ...mealData}
  * const menuDay = {meals: [meal1, meal2], ...menuDayData}
- * // !!! Right now are the 13:00 !!!
- * getFirstMealInInterval(menuDay, "meals", hoursBefore = 1, hoursAfter = 3)
+ * // !!! Right now are the 12:00 !!!
+ * getFirstMealInInterval(menuDay, "meals", hoursBefore = 0, hoursAfter = 3)
  * // returns meal1
  *
  */
 export function getFirstMealInInterval(
   menuDay,
   type = "meals",
-  hoursBefore = 1,
-  hoursAfter = 12
+  hoursBefore = 0,
+  hoursAfter = 10
 ) {
   // Establishes time range Only seems to work with 'LLLL' format
-  let now = moment().format("LLLL");
+  let now = moment();
+  console.log("[getFirstMealInInterval] now:", now);
   hoursBefore *= -1;
   let hoursBeforeNow = moment(now).add(hoursBefore, "hours");
   let hoursAfterNow = moment(now).add(hoursAfter, "hours");

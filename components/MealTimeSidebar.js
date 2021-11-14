@@ -6,7 +6,6 @@ import {
   Spacer,
   VStack,
   StackDivider,
-  Heading,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -16,108 +15,32 @@ import {
 } from "@chakra-ui/react";
 import TimeKeeper from "components/TimeKeeper";
 import EatingHistoryModal from "./EatingHistoryModal";
-import EatingHistoryForm from "./EatingHistoryForm"
+import EatingHistoryForm from "./EatingHistoryForm";
 import moment from "moment";
-import { getDayOfMenu } from "utils"
+import { getTodaysDayNumberOfMenu, getNextMeal } from "utils/menu";
 
 // The following line comes from the momentjs.com/docs
 moment().format();
 
-export default function MealTimeSidebar({resident, menuData}) {
+export default function MealTimeSidebar({ resident, menuData }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const addMealModal = useDisclosure();
-  
-  const [daysDiff, setDaysDiff] = useState(0);
-  // const [dayOfMenu, setDayOfMenu] = useState(0);
-  const [mealOfDay, setMealOfDay] = useState(0);
-  const [snackOfDay, setSnackOfDay] = useState(0);
-  
-  
-  const {dayOfMenu, currentDay, menuInit, menuLength} = useMemo(() => {
-    const menuInit = menuData.init_date;
-    const menuLength = menuData.days.length;
-    const dayOfMenu = getDayOfMenu(menuData)
-    const currentDay = menuData.days.find(day => day.day_number == dayOfMenu)  
-    return {dayOfMenu, currentDay, menuInit, menuLength}
-  }, [menuData])
+  const [{ dayOfMenu, menuLength, nextMeal, nextSnack }, setMTSData] = useState(() => getMTSData())
 
-  // Refreshes the component about menu info every 10 seconds (customizable)
+  function getMTSData() {
+    const menuLength = menuData.days.length;
+    const dayOfMenu = getTodaysDayNumberOfMenu(menuData);
+    const { nextMeal, nextSnack } = getNextMeal(menuData);
+  
+    return { dayOfMenu, menuLength, nextMeal, nextSnack };
+  }
+
   useEffect(() => {
-    refreshDates();
     const intervalId = setInterval(() => {
-      refreshDates();
-    }, 10000);
+      setMTSData(() => getMTSData());
+    }, 300000);
     return () => clearInterval(intervalId)
   }, []);
-
-  function refreshDates() {
-    // menuDateDiff: Days between today and menu initialization date
-    const menuDateDiff = Date.now() - Date.parse(menuInit);
-    const menuDateDiffInDays = menuDateDiff / 1000 / 60 / 60 / 24; // converts ms to days
-    setDaysDiff(menuDateDiffInDays);
-  }
-
-  /* useEffect(() => {
-    // Sets dayOfMenu to a number in [0, menuLength)
-    // This calculations gives a problem. Check daysDiff and menuLength
-    setDayOfMenu(daysDiff % menuLength);
-  }, [daysDiff]); */
-
-  useEffect(() => {
-    //   Set up to find the first meal and snack from (in this example) 1 hours before to 3 hours after Date.now()
-    // Refreshes every 5 minutes
-    mealDisplaySelect(1, 12);
-    const intervalId = setInterval(() => {
-      mealDisplaySelect(1, 12);
-    }, 300000);
-    return () => {
-      clearInterval(intervalId)
-    }
-  }, []);
-
-  function mealDisplaySelect(hoursBefore, hoursAfter) {
-    // Establishes time range Only seems to work with 'LLLL' format
-    let now = moment().format("LLLL");
-    hoursBefore *= -1;
-    let hoursBeforeNow = moment(now).add(hoursBefore, "hours");
-    let hoursAfterNow = moment(now).add(hoursAfter, "hours");
-
-    // isMatch is true if time of meal is found between hoursBeforeNow && hoursAfterNow, sets mealOfDay
-    currentDay.meals.forEach((meal, i) => {
-      let mealTime = moment(meal.meal_time, "H:mm:ss");
-      let isMatch =
-        moment(mealTime, "H:mm:ss").isSameOrAfter(
-          moment(hoursBeforeNow, "H:mm:ss")
-        ) &&
-        moment(mealTime, "H:mm:ss").isSameOrBefore(
-          moment(hoursAfterNow, "H:mm:ss")
-        );
-
-      if (isMatch) {
-        setMealOfDay(i);
-      }
-
-      // if (i === currentDay.meals.length && !isMatch) {
-      //   setDayOfMenu(dayOfMenu + 1);
-      // }
-    });
-
-    // isMatch is true if time of snack is found between hoursBeforeNow && hoursAfterNow, sets snackOfDay
-    currentDay.snacks.forEach((snack, i) => {
-      let snackTime = moment(snack.meal_time, "H:mm:ss");
-      let isMatch =
-        moment(snackTime, "H:mm:ss").isSameOrAfter(
-          moment(hoursBeforeNow, "H:mm:ss")
-        ) &&
-        moment(snackTime, "H:mm:ss").isSameOrBefore(
-          moment(hoursAfterNow, "H:mm:ss")
-        );
-
-      if (isMatch) {
-        setSnackOfDay(i);
-      }
-    });
-  }
 
   return (
     <div>
@@ -142,82 +65,54 @@ export default function MealTimeSidebar({resident, menuData}) {
           <b>
             Day #{dayOfMenu}/{menuLength} of menu
           </b>
-          <b>
-            {Math.ceil(daysDiff)} Days between today's date and menu initialization date
-          </b>
 
           <Box h="auto" p="10px" bg="yellow.200">
-            <b>
-              Upcoming Meal -{" "}
-              {
-                currentDay.meals[`${mealOfDay}`]
-                  .meal_role
-              }
-              :{" "}
-            </b>
+            <b>Upcoming Meal - {nextMeal.meal_role}:</b>
             <br />
-            {
-              currentDay.meals[`${mealOfDay}`]
-                .meal_title
-            }
+            {nextMeal.meal_title}
           </Box>
           <Box h="auto" p="10px" bg="tomato">
-            <b>
-              Upcoming Snack -{" "}
-              {
-                currentDay.snacks[`${snackOfDay}`]
-                  .meal_role
-              }
-              :{" "}
-            </b>
-            {
-              currentDay.snacks[`${snackOfDay}`]
-                .meal_title
-            }
+            <b>Upcoming Snack - {nextSnack.meal_role}:</b>
+            <br />
+            {nextSnack.meal_title}
           </Box>
-          <Box
-            as="button"
-            h="40px"
-            p="10px"
-            bg="pink.100"
-            height="auto"
-            onClick={onOpen}
+          <Button leftIcon="🍚" onClick={onOpen} colorScheme={"pink"}>
+            Add or Update Eating Information
+          </Button>
+          <Button
+            leftIcon="🥗"
+            onClick={addMealModal.onOpen}
+            colorScheme={"red"}
           >
-            <Heading as="h3" size="lg">
-              <b>Add or Update Eating Information</b>
-            </Heading>
-          </Box>
-            <Button leftIcon="🥗" onClick={addMealModal.onOpen} colorScheme={"red"}>
-              Register a meal
-            </Button>
+            Register a meal
+          </Button>
 
           {/* How to put a modal within a modal: https://stackoverflow.com/questions/65988633/chakra-ui-using-multiple-models-in-a-single-component */}
-          <Modal isOpen={isOpen} onClose={onClose} size="full">
-            <ModalOverlay />
-            <ModalContent>
-              <ModalHeader>Add/Edit Meal-Time Eating Information</ModalHeader>
-              <ModalCloseButton />
-              <ModalBody>
-                This is a full-sized modal. This is where we will place the
-                buttons to add/edit eating information. You can click the 'X'
-                button on the top right to leave the page.
-                <EatingHistoryModal resident={resident}/>
-              </ModalBody>
-            </ModalContent>
-          </Modal>
-          
-          <Modal isOpen={addMealModal.isOpen} onClose={addMealModal.onClose}>
-            <ModalOverlay />
-            <ModalContent>
-              <ModalHeader textAlign="center">🥗 Register a meal</ModalHeader>
-              <ModalCloseButton />
-              <ModalBody display="flex" justifyContent="center">
-                <EatingHistoryForm residentId={resident._id} upcomingMealId={currentDay.meals[mealOfDay]._id}/>
-              </ModalBody>
-            </ModalContent>
-          </Modal>
-
         </VStack>
+        <Modal isOpen={isOpen} onClose={onClose} size="full">
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>Add/Edit Meal-Time Eating Information</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody>
+              <EatingHistoryModal resident={resident} />
+            </ModalBody>
+          </ModalContent>
+        </Modal>
+
+        <Modal isOpen={addMealModal.isOpen} onClose={addMealModal.onClose}>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader textAlign="center">🥗 Register a meal</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody display="flex" justifyContent="center">
+              <EatingHistoryForm
+                residentId={resident._id}
+                upcomingMealId={nextMeal._id}
+              />
+            </ModalBody>
+          </ModalContent>
+        </Modal>
       </Box>
     </div>
   );

@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useState, useEffect } from 'react'
 import {
   Box,
   Center,
@@ -6,20 +6,28 @@ import {
   HStack,
   Text,
 } from "@chakra-ui/react";
-import { getDayOfMenu } from "utils"
+import { getNextNDayNumberOfMenu, getTodaysDayNumberOfMenu, getMenuByDayNumber } from "utils/menu"
 
 export default function MenuWeek({ menuData, ...props }) {
   
-  const { today, tomorrow } = useMemo(() => {
-    const dayOfMenu = getDayOfMenu(menuData)
-    const nextDayOfMenu = dayOfMenu + 1 >= menuData.days.length ? 1 : dayOfMenu + 1
+  const [{todaysMenu, tomorrowsMenu}, setMWData] = useState(() => getMWData())
 
-    const today = menuData.days.find(day => day.day_number == dayOfMenu);
-    const tomorrow = menuData.days.find(day => day.day_number == nextDayOfMenu);
+  function getMWData() {
+    const todaysDayNumber = getTodaysDayNumberOfMenu(menuData) // tommorws day number
+    const tomorrowsDayNumber = getNextNDayNumberOfMenu(menuData) // tommorws day number
+    
+    const todaysMenu = getMenuByDayNumber(menuData, todaysDayNumber)
+    const tomorrowsMenu = getMenuByDayNumber(menuData, tomorrowsDayNumber)
 
-    return {today, tomorrow}
-  }, [menuData])
+    return {todaysMenu, tomorrowsMenu}
+  }
 
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      setMWData(() => getMWData());
+    }, 300000);
+    return () => clearInterval(intervalId)
+  }, []);
 
   return (
     <Box
@@ -36,20 +44,20 @@ export default function MenuWeek({ menuData, ...props }) {
       <b>View This Week's Menu</b>
       
       <br />
-      <b>{`${menuData.menu_title} (${menuData.easy_id})`}</b>
+      <b>{`${menuData.menu_title}`}</b>
 
       <VStack>
         <HStack h="120px">
-          <MealsSummary bg="yellow.300" meals={today.meals} />
-          {today.meals.map((meal, i) => {
+          <MealsSummary bg="yellow.300" meals={todaysMenu.meals} />
+          {todaysMenu.meals.map((meal, i) => {
             const color = getCharkaUIColor("orange", i);
 
             return <Meal key={meal._id} bg={color} {...meal} />;
           })}
         </HStack>
         <HStack h="120px">
-          <MealsSummary title="Tomorrow" bg="yellow.400" meals={today.meals} />
-          {tomorrow.meals.map((meal, i) => {
+          <MealsSummary title="Tomorrow" bg="yellow.400" meals={todaysMenu.meals} />
+          {tomorrowsMenu.meals.map((meal, i) => {
             const color = getCharkaUIColor("orange", i, 4);
             
             return <Meal key={meal._id} bg={color} {...meal} />;
