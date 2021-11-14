@@ -38,7 +38,10 @@ export function transformEatingHistory(eatingHistory) {
  * @param {number} amount [optional] Amount of the food to get calories from. A number between 0 (nothing) and 1 (all). Default to 1
  */
 export function getMealCalories(meal, amount = 1) {
-  return (amount * (meal.protein_offered * 4 + meal.carbs_offered * 4 + meal.fat_offered * 9));
+  return (
+    amount *
+    (meal.protein_offered * 4 + meal.carbs_offered * 4 + meal.fat_offered * 9)
+  );
 }
 
 /**
@@ -47,9 +50,9 @@ export function getMealCalories(meal, amount = 1) {
  * @param arr Array of object to match to query to
  * @param searchQuery Query to match
  */
-export function searchObjects(arr=[], searchQuery="") {
-  const arrayQuery = convertToRawString(searchQuery).split(" ")
-  return arr.filter(item => doesObjectMatchQuery(item, arrayQuery))
+export function searchObjects(arr = [], searchQuery = "") {
+  const arrayQuery = convertToRawString(searchQuery).split(" ");
+  return arr.filter((item) => doesObjectMatchQuery(item, arrayQuery));
 }
 
 /**
@@ -59,21 +62,32 @@ export function searchObjects(arr=[], searchQuery="") {
  * 3. Removes any kind of accent
  * Info about `normalize` and `replace`: https://stackoverflow.com/a/37511463
  */
-export function convertToRawString(str="") {
-  return str.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+export function convertToRawString(str = "") {
+  return str
+    .trim()
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
 }
 /**
  * Returns true if the any props. of `obj` matches any string in `arrQuery`
- * 
+ *
  * Only works for resident's first_name and last_name
  * @todo make it to work with any object
  */
 export function doesObjectMatchQuery(obj, arrQuery) {
-  const rawFirstName = convertToRawString(obj["first_name"])
-  const rawLastName = convertToRawString(obj["last_name"])
+  const rawFirstName = convertToRawString(obj["first_name"]);
+  const rawLastName = convertToRawString(obj["last_name"]);
   for (let query of arrQuery) {
-    const regex = new RegExp(query, "gi")
-    if (rawFirstName.search(regex) !== -1 || rawLastName.search(regex) !== -1  ) return true
+    const regex = new RegExp(query, "gi");
+    if (rawFirstName.search(regex) !== -1 || rawLastName.search(regex) !== -1)
+      return true;
   }
-  return false
+  return false;
+}
+
+export function getDayOfMenu(menu) {
+  const menuDateDiff = Date.now() - Date.parse(menu.init_date);
+  const menuDateDiffInDays = Math.floor(menuDateDiff / 1000 / 60 / 60 / 24);
+  return (menuDateDiffInDays % menu.days.length) + 1;
 }

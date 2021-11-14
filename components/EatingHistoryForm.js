@@ -15,24 +15,6 @@ import {
 } from "@chakra-ui/react";
 import "react-datepicker/dist/react-datepicker.css";
 import { updateResident } from 'utils/api'
-/**
- * 
- * day: {
-      type: Date,
-      // required: true
-    },
-    mealId: { 
-      type: Schema.Types.ObjectId,  //Schema.Types.ObjectId // Schema.ObjectId
-      ref: "Meal"
-    },
-    
-    unique_code: {
-      type: String
-    },
-    amount_eaten: {
-      type: Number
-    },
- */
 
 /**
  * Form to add a new meal to the resident's eating history.

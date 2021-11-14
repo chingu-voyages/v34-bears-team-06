@@ -1,5 +1,4 @@
-import mongoose, { ObjectId, Schema } from 'mongoose';
-import Day from './day'
+import mongoose, { Schema } from 'mongoose';
 
 var resident = new Schema({
   first_name: {
@@ -25,10 +24,9 @@ var resident = new Schema({
   eating_history: [{
     day: {
       type: Date,
-      // required: true
     },
     mealId: { 
-      type: Schema.Types.ObjectId,  //Schema.Types.ObjectId // Schema.ObjectId
+      type: Schema.Types.ObjectId,
       ref: "Meal"
     },
     

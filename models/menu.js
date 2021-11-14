@@ -16,13 +16,13 @@ var menu = new Schema({
       },
       meals: [
         {
-          type: Schema.Types.ObjectId, //Schema.Types.ObjectId // Schema.ObjectId
+          type: Schema.Types.ObjectId, 
           ref: "Meal",
         },
       ],
       snacks: [
         {
-          type: Schema.Types.ObjectId, //Schema.Types.ObjectId // Schema.ObjectId
+          type: Schema.Types.ObjectId, 
           ref: "Meal",
         },
       ],
