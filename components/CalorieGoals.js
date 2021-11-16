@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Box, Image, Flex, Spacer, Badge } from "@chakra-ui/react";
+// import baseMetabolicEquation from "utils"
 
 export default function CalorieGoals({ userDB, ...props }) {
 
@@ -8,6 +9,9 @@ export default function CalorieGoals({ userDB, ...props }) {
     const timeDiff = (Date.now() - new Date(dob)) / 1000 / 365 / 24 / 60 / 60;
     return Math.floor(timeDiff);
   }
+
+  const [age, setAge] = useState(returnAge(userDB.date_of_birth))
+  console.log(age)
 
   function baseMetabolicEquation(age, weight, height, male) {
 
@@ -48,7 +52,7 @@ export default function CalorieGoals({ userDB, ...props }) {
       {/* Base Metabolic Estimate */}
       <b>Baseline Metabolic Rate: </b>{" "}
       {baseMetabolicEquation(
-        returnAge(userDB.date_of_birth),
+        age,
         userDB.weight,
         userDB.height,
         true
