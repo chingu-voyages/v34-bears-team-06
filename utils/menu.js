@@ -114,3 +114,20 @@ export function getFirstMealInInterval(
     }
   });
 }
+
+/**
+ * Will return an array of the meals in the menu, without meals repeated. (in other words, unique meals)
+ * Logic made with a Hash Table
+ */
+export function getUniqueMeals(menu) {
+  const hashTable = {}
+  menu.days.forEach(day => {
+    const { meals, snacks } = day
+    const mealsAndSnacksArray = [...meals, ...snacks]
+
+    mealsAndSnacksArray.forEach(meal => {
+      if (!hashTable[meal._id]) hashTable[meal._id] = meal
+    })
+  })
+  return Object.values(hashTable)
+}
