@@ -27,7 +27,7 @@ export function transformEatingHistory(eatingHistory) {
     // If it's last day or day will change
     if (!eatingHistory[i + 1] || dateDay.getDate() !== nextDateDay.getDate()) {
       const _finalData = {
-        day: `${dateDay.getMonth()}/${dateDay.getDate()}`,
+        day: `${dateDay.getMonth() + 1}/${dateDay.getDate()}`,
         date: dateDay,
         calories: totalDayCalories,
       };
@@ -110,4 +110,22 @@ export function baseMetabolicEquation(age, weight, height, male) {
     equation -= 80;
   }
   return Math.floor(equation);
+}
+
+export function estimatedEnergyEquation(age, weight, height, male) {
+  weight = weight / 2.2
+  height = height / 100;
+  let equation;
+
+  if (male === true) {
+    equation = 662 - 9.53 * age + (15.91 * weight + 539.6 * height);
+  } else {
+    equation = 354 - 6.91 * age + (9.36 * weight + 726 * height);
+  }
+  return Math.floor(equation);
+}
+
+export function returnAge(dob) {
+  const timeDiff = (Date.now() - new Date(dob)) / 1000 / 365 / 24 / 60 / 60;
+  return Math.floor(timeDiff);
 }
