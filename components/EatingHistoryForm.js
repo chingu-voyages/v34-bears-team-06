@@ -1,10 +1,8 @@
-import { useState } from 'react'
+import { useState, forwardRef } from 'react'
 import DatePicker from "react-datepicker";
 import {
   Box,
   VStack,
-  HStack,
-  Input,
   NumberInput,
   NumberInputField,
   NumberInputStepper,
@@ -15,21 +13,24 @@ import {
 } from "@chakra-ui/react";
 import "react-datepicker/dist/react-datepicker.css";
 import { updateResident } from 'utils/api'
+import { getTodaysMeals } from "utils/menu" 
+import MealsListPopover from 'components/Meal/MealsListPopover'
 
 /**
  * Form to add a new meal to the resident's eating history.
  * 
- * The meal to add should be the next in the menu, however, this component won't be 
- * limited to that. You can add any meal you want, but the form will be pre-populated 
- * with the next meal in the menu to make it easier to add it.
+ * The form will be prepopulated with optimistic data:
+ * - The next meal in the menu
+ * - Todays date
+ * @todo - prepopulate meals list only with todays meals
  * 
- * Currently only works with meal ids
  */
-export default function EatingHistoryForm({ residentId, upcomingMealId }) {
+export default function EatingHistoryForm({ residentId, upcomingMeal, menu }) {
+  const [loading, setLoading] = useState(false)
+  const [meal, setMeal] = useState(upcomingMeal)
   const [formData, _setFormData] = useState({
     day: new Date(),
     amount_eaten: 1,
-    mealId: upcomingMealId
   });
 
   /**
@@ -44,11 +45,31 @@ export default function EatingHistoryForm({ residentId, upcomingMealId }) {
     }
   }
 
-  const [loading, setLoading] = useState(false)
+  const meals = getTodaysMeals(menu)
+  const MealListPopoverTrigger = forwardRef((buttonProps, ref) => (
+    <Button
+      w="250px"
+      justifyContent="left"
+      fontWeight="normal"
+      ref={ref}
+      {...buttonProps}
+    >
+      {
+        !meal
+          ? "Select a meal"
+          : (<MealLabel meal={meal}/>)
+      }
+    </Button>
+  ))
+
   const onSubmit = async () => {
-    console.log("[EatingHistoryForm][onSubmit] formData: ", formData);
+    const fixedFormData = {
+      ...formData,
+      mealId: meal._id
+    }
+    console.log("[EatingHistoryForm][onSubmit] fixedFormData: ", fixedFormData);
     setLoading(true)
-    await updateResident(residentId, { eating_history: formData })
+    await updateResident(residentId, { eating_history: fixedFormData })
     setLoading(false)
   }
   
@@ -60,7 +81,13 @@ export default function EatingHistoryForm({ residentId, upcomingMealId }) {
       </Box>
       <Box>
         <Text fontWeight="600">Meal:</Text>
-        <Input value={formData.mealId} onChange={setFormData("mealId")}/>
+        <MealsListPopover
+          meals={meals}
+          selected={meal}
+          onMealClick={setMeal}
+          Trigger={MealListPopoverTrigger}
+          popoverContentProps={{maxHeight: "350px"}}
+        />
       </Box>
       <Box>
         <Text fontWeight="600">Amount eaten:</Text>
@@ -76,3 +103,14 @@ export default function EatingHistoryForm({ residentId, upcomingMealId }) {
     </VStack>
   );
 }
+
+const MealLabel = ({ meal }) => (
+  <>
+    <Text fontWeight="bold">
+      { meal.meal_role }
+    </Text>
+    <Text ml="2px" isTruncated>
+      { meal.meal_title }
+    </Text>
+  </>
+)

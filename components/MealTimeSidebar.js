@@ -108,7 +108,8 @@ export default function MealTimeSidebar({ resident, menuData }) {
             <ModalBody display="flex" justifyContent="center">
               <EatingHistoryForm
                 residentId={resident._id}
-                upcomingMealId={nextMeal._id}
+                upcomingMeal={nextMeal}
+                menu={menuData}
               />
             </ModalBody>
           </ModalContent>
