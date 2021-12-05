@@ -1,4 +1,4 @@
-import { useState, useMemo, forwardRef } from 'react'
+import { useState, forwardRef } from 'react'
 import DatePicker from "react-datepicker";
 import {
   Box,
@@ -13,15 +13,16 @@ import {
 } from "@chakra-ui/react";
 import "react-datepicker/dist/react-datepicker.css";
 import { updateResident } from 'utils/api'
-import { getUniqueMeals } from "utils/menu" 
+import { getTodaysMeals } from "utils/menu" 
 import MealsListPopover from 'components/Meal/MealsListPopover'
 
 /**
  * Form to add a new meal to the resident's eating history.
  * 
- * The form will be prepopulated with optimitic data:
+ * The form will be prepopulated with optimistic data:
  * - The next meal in the menu
  * - Todays date
+ * @todo - prepopulate meals list only with todays meals
  * 
  */
 export default function EatingHistoryForm({ residentId, upcomingMeal, menu }) {
@@ -44,24 +45,14 @@ export default function EatingHistoryForm({ residentId, upcomingMeal, menu }) {
     }
   }
 
-  const meals = useMemo(() => getUniqueMeals(menu), [menu])
-  const MealLabel = ({ meal }) => (
-    <>
-      <Text fontWeight="bold">
-        { meal.meal_role }
-      </Text>
-      <Text ml="2px" isTruncated>
-        { meal.meal_title }
-      </Text>
-    </>
-  )
-  const MealListPopoverTrigger = forwardRef((props, ref) => (
+  const meals = getTodaysMeals(menu)
+  const MealListPopoverTrigger = forwardRef((buttonProps, ref) => (
     <Button
       w="250px"
       justifyContent="left"
       fontWeight="normal"
       ref={ref}
-      {...props}
+      {...buttonProps}
     >
       {
         !meal
@@ -112,3 +103,14 @@ export default function EatingHistoryForm({ residentId, upcomingMeal, menu }) {
     </VStack>
   );
 }
+
+const MealLabel = ({ meal }) => (
+  <>
+    <Text fontWeight="bold">
+      { meal.meal_role }
+    </Text>
+    <Text ml="2px" isTruncated>
+      { meal.meal_title }
+    </Text>
+  </>
+)

@@ -20,7 +20,7 @@ export function getTodaysMenu(menu) {
 }
 
 /**
- * Returns the next n day number of the menu\
+ * Returns the next _n_ day number of the menu\
  * Default: returns the **NEXT** day number of menu (tomorrow)
  */
 export function getNextNDayNumberOfMenu(menu, n = 1) {
@@ -32,7 +32,7 @@ export function getNextNDayNumberOfMenu(menu, n = 1) {
 }
 
 /**
- * Equilty check done with its _id properties
+ * Equity check done with its _id properties
  */
 export function areSameMeal(meal1, meal2) {
   return meal1._id == meal2._id;
@@ -99,7 +99,7 @@ export function getFirstMealInInterval(
   let hoursAfterNow = moment(now).add(hoursAfter, "hours");
 
   // isMatch is true if time of meal is found between hoursBeforeNow && hoursAfterNow, sets mealOfDay
-  return menuDay[type].find((meal, i) => {
+  return menuDay[type].find((meal) => {
     let mealTime = moment(meal.meal_time, "H:mm:ss");
     let isMatch =
       moment(mealTime, "H:mm:ss").isSameOrAfter(
@@ -116,8 +116,8 @@ export function getFirstMealInInterval(
 }
 
 /**
- * Will return an array of the meals in the menu, without meals repeated. (in other words, unique meals)
- * Logic made with a Hash Table
+ * Will return an array of the meals in the menu, without meals repeated. (in other words, unique meals)\
+ * _Logic made with a Hash Table_
  */
 export function getUniqueMeals(menu) {
   const hashTable = {}
@@ -130,4 +130,9 @@ export function getUniqueMeals(menu) {
     })
   })
   return Object.values(hashTable)
+}
+
+export function getTodaysMeals(menu) {
+  const { meals, snacks } = getTodaysMenu(menu)
+  return [...meals, ...snacks] 
 }
